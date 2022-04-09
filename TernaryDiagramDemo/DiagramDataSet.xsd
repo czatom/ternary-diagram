@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DiagramDataSet" targetNamespace="http://tempuri.org/DataSet1.xsd" xmlns:mstns="http://tempuri.org/DataSet1.xsd" xmlns="http://tempuri.org/DataSet1.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DiagramDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_UserDSName="DiagramDataSet" msprop:Generator_DataSetName="DiagramDataSet">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="SlagData" msprop:Generator_RowEvHandlerName="SlagDataRowChangeEventHandler" msprop:Generator_RowDeletedName="SlagDataRowDeleted" msprop:Generator_RowDeletingName="SlagDataRowDeleting" msprop:Generator_RowEvArgName="SlagDataRowChangeEvent" msprop:Generator_TablePropName="SlagData" msprop:Generator_RowChangedName="SlagDataRowChanged" msprop:Generator_RowChangingName="SlagDataRowChanging" msprop:Generator_TableClassName="SlagDataDataTable" msprop:Generator_RowClassName="SlagDataRow" msprop:Generator_TableVarName="tableSlagData" msprop:Generator_UserTableName="SlagData">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Si" msprop:Generator_ColumnPropNameInRow="Si" msprop:Generator_ColumnPropNameInTable="SiColumn" msprop:Generator_ColumnVarNameInTable="columnSi" msprop:Generator_UserColumnName="Si" type="xs:double" minOccurs="0" />
+              <xs:element name="Fe" msprop:Generator_ColumnPropNameInRow="Fe" msprop:Generator_ColumnPropNameInTable="FeColumn" msprop:Generator_ColumnVarNameInTable="columnFe" msprop:Generator_UserColumnName="Fe" type="xs:double" minOccurs="0" />
+              <xs:element name="CaO" msprop:Generator_ColumnPropNameInRow="CaO" msprop:Generator_ColumnPropNameInTable="CaOColumn" msprop:Generator_ColumnVarNameInTable="columnCaO" msprop:Generator_UserColumnName="CaO" type="xs:double" minOccurs="0" />
+              <xs:element name="SiO2" msprop:Generator_ColumnPropNameInRow="SiO2" msprop:Generator_ColumnPropNameInTable="SiO2Column" msprop:Generator_ColumnVarNameInTable="columnSiO2" msprop:Generator_UserColumnName="SiO2" type="xs:double" minOccurs="0" />
+              <xs:element name="MgO" msprop:Generator_ColumnPropNameInRow="MgO" msprop:Generator_ColumnPropNameInTable="MgOColumn" msprop:Generator_ColumnVarNameInTable="columnMgO" msprop:Generator_UserColumnName="MgO" type="xs:double" minOccurs="0" />
+              <xs:element name="Al2O3" msprop:Generator_ColumnPropNameInRow="Al2O3" msprop:Generator_ColumnPropNameInTable="Al2O3Column" msprop:Generator_ColumnVarNameInTable="columnAl2O3" msprop:Generator_UserColumnName="Al2O3" type="xs:double" minOccurs="0" />
+              <xs:element name="MnO" msprop:Generator_ColumnPropNameInRow="MnO" msprop:Generator_ColumnPropNameInTable="MnOColumn" msprop:Generator_ColumnVarNameInTable="columnMnO" msprop:Generator_UserColumnName="MnO" type="xs:double" minOccurs="0" />
+              <xs:element name="P2O5" msprop:Generator_ColumnPropNameInRow="P2O5" msprop:Generator_ColumnPropNameInTable="P2O5Column" msprop:Generator_ColumnVarNameInTable="columnP2O5" msprop:Generator_UserColumnName="P2O5" type="xs:double" minOccurs="0" />
+              <xs:element name="S" msprop:Generator_ColumnPropNameInRow="S" msprop:Generator_ColumnPropNameInTable="SColumn" msprop:Generator_ColumnVarNameInTable="columnS" msprop:Generator_UserColumnName="S" type="xs:double" minOccurs="0" />
+              <xs:element name="basicity" msprop:Generator_ColumnPropNameInRow="basicity" msprop:Generator_ColumnPropNameInTable="basicityColumn" msprop:Generator_ColumnVarNameInTable="columnbasicity" msprop:Generator_UserColumnName="basicity" type="xs:double" minOccurs="0" />
+              <xs:element name="FeOn" msprop:Generator_ColumnPropNameInRow="FeOn" msprop:Generator_ColumnPropNameInTable="FeOnColumn" msprop:Generator_ColumnVarNameInTable="columnFeOn" msprop:Generator_UserColumnName="FeOn" type="xs:double" minOccurs="0" />
+              <xs:element name="FeOn_t" msprop:Generator_ColumnPropNameInRow="FeOn_t" msprop:Generator_ColumnPropNameInTable="FeOn_tColumn" msprop:Generator_ColumnVarNameInTable="columnFeOn_t" msprop:Generator_UserColumnName="FeOn_t" type="xs:double" minOccurs="0" />
+              <xs:element name="CaO_t" msprop:Generator_ColumnPropNameInRow="CaO_t" msprop:Generator_ColumnPropNameInTable="CaO_tColumn" msprop:Generator_ColumnVarNameInTable="columnCaO_t" msprop:Generator_UserColumnName="CaO_t" type="xs:double" minOccurs="0" />
+              <xs:element name="SiO2_t" msprop:Generator_ColumnPropNameInRow="SiO2_t" msprop:Generator_ColumnPropNameInTable="SiO2_tColumn" msprop:Generator_ColumnVarNameInTable="columnSiO2_t" msprop:Generator_UserColumnName="SiO2_t" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="RandomData" msprop:Generator_RowClassName="RandomDataRow" msprop:Generator_RowEvHandlerName="RandomDataRowChangeEventHandler" msprop:Generator_RowDeletedName="RandomDataRowDeleted" msprop:Generator_RowDeletingName="RandomDataRowDeleting" msprop:Generator_RowEvArgName="RandomDataRowChangeEvent" msprop:Generator_TablePropName="RandomData" msprop:Generator_RowChangedName="RandomDataRowChanged" msprop:Generator_RowChangingName="RandomDataRowChanging" msprop:Generator_TableClassName="RandomDataDataTable" msprop:Generator_UserTableName="RandomData" msprop:Generator_TableVarName="tableRandomData">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="A" msprop:Generator_ColumnPropNameInRow="A" msprop:Generator_ColumnPropNameInTable="AColumn" msprop:Generator_ColumnVarNameInTable="columnA" msprop:Generator_UserColumnName="A" type="xs:double" minOccurs="0" />
+              <xs:element name="B" msprop:Generator_ColumnPropNameInRow="B" msprop:Generator_ColumnPropNameInTable="BColumn" msprop:Generator_ColumnVarNameInTable="columnB" msprop:Generator_UserColumnName="B" type="xs:double" minOccurs="0" />
+              <xs:element name="C" msprop:Generator_ColumnPropNameInRow="C" msprop:Generator_ColumnPropNameInTable="CColumn" msprop:Generator_ColumnVarNameInTable="columnC" msprop:Generator_UserColumnName="C" type="xs:double" minOccurs="0" />
+              <xs:element name="D" msprop:Generator_ColumnPropNameInRow="D" msprop:Generator_ColumnPropNameInTable="DColumn" msprop:Generator_ColumnVarNameInTable="columnD" msprop:Generator_UserColumnName="D" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
