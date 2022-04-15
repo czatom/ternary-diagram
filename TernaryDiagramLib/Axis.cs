@@ -154,7 +154,7 @@ namespace TernaryDiagramLib
                 _supportArrow = value;
             }
         }
-        #endregion //Properties 
+        #endregion // Properties 
 
         #region Overrides
         public override string ToString()
@@ -164,7 +164,7 @@ namespace TernaryDiagramLib
             else
                 return base.ToString();
         }
-        #endregion //Overrides
+        #endregion // Overrides
 
         #region Events
         private event PropertyChangedEventHandler _propertyChanged;
@@ -194,6 +194,6 @@ namespace TernaryDiagramLib
                 _propertyChanged(this, e);
             }
         }
-        #endregion //Events
+        #endregion // Events
     }
 }

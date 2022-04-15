@@ -8,64 +8,44 @@ namespace TernaryDiagramLib
         /// <summary>
         /// Creates ternary diagram point
         /// </summary>
-        /// <param name="valA">Value of A coordinate</param>
-        /// <param name="valB">Value of B coordinate</param>
-        /// <param name="valC">Value of C coordinate</param>
-        /// <param name="valD">Value of D</param>
+        /// <param name="a">A coordinate</param>
+        /// <param name="b">B coordinate</param>
+        /// <param name="c">C coordinate</param>
+        /// <param name="value">Value</param>
         /// <param name="diagram">Ternary diagram reference</param>
-        public PointT(float valA, float valB, float valC, float valD, TernaryDiagram diagram)
+        public PointT(float a, float b, float c, double value, TernaryDiagram diagram)
         {
-            this._valueA = valA;
-            this._valueB = valB;
-            this._valueC = valC;
-            this._valueD = valD;
+            this.A = a;
+            this.B = b;
+            this.C = c;
+            this.Value = value;
             _diagram = diagram;
         }
 
         #region Variables
-        private TernaryDiagram _diagram;
-        private float _valueA;
-        private float _valueB;
-        private float _valueC;
-        private float _valueD;
-        #endregion //Variables
+        private readonly TernaryDiagram _diagram;
+        #endregion // Variables
 
         #region Properties
         /// <summary>
         /// Gets or sets value of A coordinate
         /// </summary>
-        public float ValueA
-        {
-            get { return _valueA; }
-            set { _valueA = value; }
-        }
+        public float A { get; set; }
 
         /// <summary>
         /// Gets or sets value of B coodinate
         /// </summary>
-        public float ValueB
-        {
-            get { return _valueB; }
-            set { _valueB = value; }
-        }
+        public float B { get; set; }
 
         /// <summary>
         /// Gets or sets value of C coordinate
         /// </summary>
-        public float ValueC
-        {
-            get { return _valueC; }
-            set { _valueC = value; }
-        }
+        public float C { get; set; }
 
         /// <summary>
         /// Gets or sets value of D (marked with color)
         /// </summary>
-        public float ValueD
-        {
-            get { return _valueD; }
-            set { _valueD = value; }
-        }
+        public double Value { get; set; }
 
         /// <summary>
         /// Gets ABC point in control coordinate system
@@ -74,7 +54,7 @@ namespace TernaryDiagramLib
         {
             get
             {
-                return realCoords();
+                return RealCoords();
             }
         }
 
@@ -86,7 +66,7 @@ namespace TernaryDiagramLib
             get
             {
                 DiagramArea diagram = _diagram.DiagramAreas[0];
-                PointF abc = realCoords();
+                PointF abc = RealCoords();
                 RectangleF rect = new RectangleF();
                 rect.X = abc.X - diagram.MarkerSize / 2;
                 rect.Y = abc.Y - diagram.MarkerSize / 2;
@@ -101,22 +81,22 @@ namespace TernaryDiagramLib
         /// Calculates real diagram coordinates of current ternary point
         /// </summary>
         /// <returns>XY point</returns>
-        private PointF realCoords()
+        private PointF RealCoords()
         {
             Triangle triangle = this._diagram.DiagramAreas[0].DiagramTriangle;
             // B value on AB axis
-            float abX = triangle.VertexA.X - (_valueB * (triangle.SideLength / (2 * 100)));
-            float abY = triangle.VertexA.Y + (_valueB * (triangle.Height / 100));
+            float abX = triangle.VertexA.X - (B * (triangle.SideLength / (2 * 100)));
+            float abY = triangle.VertexA.Y + (B * (triangle.Height / 100));
             PointF axisBval = new PointF(abX, abY);
 
             // C value on BC axis
-            float bcX = triangle.VertexB.X + (_valueC * (triangle.SideLength / 100));
+            float bcX = triangle.VertexB.X + (C * (triangle.SideLength / 100));
             float bcY = triangle.VertexB.Y;
             PointF axisCval = new PointF(bcX, bcY);
 
             // A value on CA axis
-            float caX = triangle.VertexC.X - (_valueA * (triangle.SideLength / (2 * 100)));
-            float caY = triangle.VertexC.Y - (_valueA * (triangle.Height / 100));
+            float caX = triangle.VertexC.X - (A * (triangle.SideLength / (2 * 100)));
+            float caY = triangle.VertexC.Y - (A * (triangle.Height / 100));
             PointF axisAval = new PointF(caX, caY);
 
             // y=ax+b
@@ -140,7 +120,7 @@ namespace TernaryDiagramLib
             if (pointObj == null)
                 return false;
             else
-                return _valueA.Equals(pointObj._valueA) && _valueB.Equals(pointObj._valueB) && _valueC.Equals(pointObj._valueC) && pointObj._diagram.Equals(_diagram);
+                return A.Equals(pointObj.A) && B.Equals(pointObj.B) && C.Equals(pointObj.C) && pointObj._diagram.Equals(_diagram); //TODO do we need to compare values?
         }
 
         public override int GetHashCode()

@@ -14,6 +14,7 @@ namespace TernaryDiagramLib
     {
         internal void Initialize()
         {
+            _enabled = true;
             _size = new System.Drawing.Size(20, 150);
             _location = new Point();
             _font = new System.Drawing.Font(FontFamily.GenericSansSerif, 10, FontStyle.Regular);
@@ -22,6 +23,8 @@ namespace TernaryDiagramLib
             _titleColor = Color.Black;
             _title = "";
             _titleFont = new System.Drawing.Font(FontFamily.GenericSansSerif, 10, FontStyle.Regular);
+            _minValue = double.NaN;
+            _maxValue = double.NaN;
         }
 
         /// <summary>
@@ -30,7 +33,7 @@ namespace TernaryDiagramLib
         public ValueGradient()
         {
             _colorMap = ColorMaps.JetFlame;
-            this.Initialize();
+            Initialize();
         }
 
         /// <summary>
@@ -40,20 +43,14 @@ namespace TernaryDiagramLib
         public ValueGradient(ColorMap colorMap)
         {
             _colorMap = colorMap;
-            this.Initialize();
+            Initialize();
         }
 
+        #region Properties
         //List of color points in ascending value.
         private ColorMap _colorMap;
-        private bool _enabled = true;
-        private string _title;
-        private Color _titleColor;
-        private Size _size;
-        private Point _location;
-        private Font _font;
-        private Color _foreColor;
-        private Font _titleFont;
 
+        private bool _enabled;
         /// <summary>
         /// Enables or disables value gradient
         /// </summary>
@@ -71,6 +68,33 @@ namespace TernaryDiagramLib
             }
         }
 
+        private double _minValue;
+        /// <summary>
+        /// Minimum value to display
+        /// </summary>
+        [Category("Data")]
+        [Description("Minimum value to display")]
+        [RefreshProperties(RefreshProperties.All)]
+        public double Minimum
+        {
+            get { return _minValue; }
+            set { _minValue = value; }
+        }
+
+        private double _maxValue;
+        /// <summary>
+        /// Maximum value to display
+        /// </summary>
+        [Category("Data")]
+        [Description("Maximum value to display")]
+        [RefreshProperties(RefreshProperties.All)]
+        public double Maximum
+        {
+            get { return _maxValue; }
+            set { _maxValue = value; }
+        }
+
+        private Size _size;
         /// <summary>
         /// Gets or sets size of the value gradient
         /// </summary>
@@ -88,6 +112,7 @@ namespace TernaryDiagramLib
             }
         }
 
+        private Point _location;
         [Category("Layout")]
         [Description("Gets or sets location of the value gradient")]
         [NotifyParentProperty(true)]
@@ -102,6 +127,7 @@ namespace TernaryDiagramLib
             }
         }
 
+        private Font _font;
         [Category("Appearance")]
         [Description("Gets or sets font of the gradient labels")]
         [DefaultValue(typeof(Font), "Arial, 10pt")]
@@ -116,6 +142,7 @@ namespace TernaryDiagramLib
             }
         }
 
+        private Color _foreColor;
         [Category("Appearance")]
         [Description("Gets or sets color of the gradient labels")]
         [DefaultValue(typeof(Color), "Black")]
@@ -130,6 +157,7 @@ namespace TernaryDiagramLib
             }
         }
 
+        private string _title;
         [Category("Appearance")]
         [Description("Gets or sets title of gradient")]
         [DefaultValue("Gradient")]
@@ -144,6 +172,7 @@ namespace TernaryDiagramLib
             }
         }
 
+        private Font _titleFont;
         [Category("Appearance")]
         [Description("Gets or sets font of the gradient title")]
         [DefaultValue(typeof(Font), "Arial, 10pt")]
@@ -158,6 +187,7 @@ namespace TernaryDiagramLib
             }
         }
 
+        private Color _titleColor;
         [Category("Appearance")]
         [Description("Gets or sets color of gradient title")]
         [DefaultValue(typeof(Color), "0x000000")]
@@ -187,10 +217,11 @@ namespace TernaryDiagramLib
                 OnChanged(this, new PropertyChangedEventArgs("ExclusiveColors"));
             }
         }
+        #endregion Properties
 
         #region Methods
         /// <summary>
-        ///Inputs a (value) between 0 and 1 and outputs color representing that position in the gradient.
+        /// Inputs a (value) between 0 and 1 and outputs color representing that position in the gradient.
         /// </summary>
         /// <param name="value">Gradient value</param>
         /// <returns>Color at specified value of gradient</returns>
@@ -239,14 +270,13 @@ namespace TernaryDiagramLib
                 {
                     ColorPoint cp0 = _colorMap.ColorPoints.First(n => n.Color == color);
                     return cp0.Value;
-
                 }
                 else
                 {
-                    //closest color
-                    ColorPoint cp1 = getNearestColorPoint(color);
-                    //second closest color
-                    ColorPoint cp2 = getNearestColorPoint(color, cp1.Color);
+                    // Closest color
+                    ColorPoint cp1 = GetNearestColorPoint(color);
+                    // Second closest color
+                    ColorPoint cp2 = GetNearestColorPoint(color, cp1.Color);
 
                     double fract = double.NaN;
                     double value = double.NaN;
@@ -309,7 +339,7 @@ namespace TernaryDiagramLib
         /// </summary>
         /// <param name="input_color">Given color to search for closest match</param>
         /// <returns>Matching gradient ColorPoint</returns>
-        private ColorPoint getNearestColorPoint(Color input_color)
+        private ColorPoint GetNearestColorPoint(Color input_color)
         {
             double dbl_input_red = Convert.ToDouble(input_color.R);
             double dbl_input_green = Convert.ToDouble(input_color.G);
@@ -329,7 +359,7 @@ namespace TernaryDiagramLib
                 double dbl_test_blue = Math.Pow(Convert.ToDouble(o.B) - dbl_input_blue, 2.0);
 
                 double temp = Math.Sqrt(dbl_test_blue + dbl_test_green + dbl_test_red);
-                // explore the result and store the nearest color
+                // Explore the result and store the nearest color
                 if (temp == 0.0)
                 {
                     nearest_color = colorPoint;
@@ -351,7 +381,7 @@ namespace TernaryDiagramLib
         /// <param name="input_color">Given color to search for closest match</param>
         /// <param name="exception">Color excluded from search results</param>
         /// <returns>Matching gradient ColorPoint</returns>
-        private ColorPoint getNearestColorPoint(Color input_color, Color exception)
+        private ColorPoint GetNearestColorPoint(Color input_color, Color exception)
         {
             double dbl_input_red = Convert.ToDouble(input_color.R);
             double dbl_input_green = Convert.ToDouble(input_color.G);
@@ -367,7 +397,7 @@ namespace TernaryDiagramLib
                 if (o != exception)
                 {
                     // Compute the Euclidean distance between the two colors
-                    // Note, that the alpha-component is not used in this example
+                    // Note, that the alpha-component is not used
                     double dbl_test_red = Math.Pow(Convert.ToDouble(o.R) - dbl_input_red, 2.0);
                     double dbl_test_green = Math.Pow(Convert.ToDouble(o.G) - dbl_input_green, 2.0);
                     double dbl_test_blue = Math.Pow(Convert.ToDouble(o.B) - dbl_input_blue, 2.0);
@@ -413,7 +443,7 @@ namespace TernaryDiagramLib
 
             return (Image)bmp;
         }
-        #endregion //Methods
+        #endregion // Methods
 
         #region Events
         public event PropertyChangedEventHandler PropertyChanged;
@@ -425,7 +455,7 @@ namespace TernaryDiagramLib
                 PropertyChanged(this, e);
             }
         }
-        #endregion //Events
+        #endregion // Events
     }
 
     /// <summary>
@@ -468,16 +498,16 @@ namespace TernaryDiagramLib
             Color = color;
         }
 
-        //Red, green and blue component values of color.
+        // Red, green and blue component values of color.
         public int R, G, B;
-        //Position of our color along the gradient (between 0 and 1).
+        // Position of our color along the gradient (between 0 and 1).
         public double Value;
-        //Color component of the ColorPoint
+        // Color component of the ColorPoint
         public Color Color;
 
         public override string ToString()
         {
-            return String.Format("R:{0}, G:{1}, B:{2}, Value:{3}", this.R, this.G, this.B, this.Value);
+            return String.Format("R:{0}, G:{1}, B:{2}, Value:{3}", R, G, B, Value);
         }
     }
 

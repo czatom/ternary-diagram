@@ -78,7 +78,7 @@ namespace TernaryDiagramLib
                 OnChanged(this, new PropertyChangedEventArgs("LineColor"));
             }
         }
-        #endregion //Properties
+        #endregion // Properties
 
         #region Events
         public event PropertyChangedEventHandler PropertyChanged;
@@ -90,6 +90,6 @@ namespace TernaryDiagramLib
                 PropertyChanged(this, e);
             }
         }
-        #endregion //Events
+        #endregion // Events
     }
 }

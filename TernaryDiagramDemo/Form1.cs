@@ -18,6 +18,7 @@ namespace TernaryDiagram
         private void Form1_Load(object sender, EventArgs e)
         {
             diagramDataGridView.AutoGenerateColumns = true;
+
             // Read slag data
             ReadSlagData();
         }
@@ -27,7 +28,7 @@ namespace TernaryDiagram
             DiagramDataSet.SlagDataDataTable dt = diagramDataSet.SlagData;
             using (StreamReader sr = new StreamReader("slag_data.csv"))
             {
-                //skip header
+                // Skip header
                 sr.ReadLine();
                 while (!sr.EndOfStream)
                 {
@@ -47,6 +48,7 @@ namespace TernaryDiagram
                     dr.FeOn_t = double.Parse(values[11]);
                     dr.CaO_t = double.Parse(values[12]);
                     dr.SiO2_t = double.Parse(values[13]);
+
                     dt.Rows.Add(dr);
                 }
             }
@@ -72,7 +74,7 @@ namespace TernaryDiagram
                     diagramDataSet.RandomData.AddRandomDataRow(valA, valB, valC, valD);
                 }
 
-                ternaryDiagram.LoadData(diagramDataSet.RandomData,
+                ternaryDiagram.DiagramAreas[0].LoadData(diagramDataSet.RandomData,
                     diagramDataSet.RandomData.AColumn,
                     diagramDataSet.RandomData.BColumn,
                     diagramDataSet.RandomData.CColumn,
@@ -103,19 +105,20 @@ namespace TernaryDiagram
 
         private void LoadSlagDataToolStripButton_Click(object sender, EventArgs e)
         {
-            ternaryDiagram.LoadData(diagramDataSet.SlagData,
+            ternaryDiagram.DiagramAreas[0].LoadData(diagramDataSet.SlagData,
                                 diagramDataSet.SlagData.CaO_tColumn,
                                 diagramDataSet.SlagData.FeOn_tColumn,
-                                diagramDataSet.SlagData.SiO2_tColumn,
+                                diagramDataSet.SlagData.SiO2_tColumn, 
                                 diagramDataSet.SlagData.SiColumn);
 
             ternaryDiagram.DiagramAreas[0].Title = "Slag data";
             ternaryDiagram.DiagramAreas[0].AxisA.Title = "CaO";
             ternaryDiagram.DiagramAreas[0].AxisB.Title = "FeO";
             ternaryDiagram.DiagramAreas[0].AxisC.Title = "SiO2";
-            ternaryDiagram.DiagramAreas[0].AxisA.SupportArrow.LabelText = "% CaO";
-            ternaryDiagram.DiagramAreas[0].AxisB.SupportArrow.LabelText = "% FeO";
-            ternaryDiagram.DiagramAreas[0].AxisC.SupportArrow.LabelText = "% SiO2";
+            ternaryDiagram.DiagramAreas[0].AxisA.SupportArrow.LabelText = "CaO [%]";
+            ternaryDiagram.DiagramAreas[0].AxisB.SupportArrow.LabelText = "FeO [%]";
+            ternaryDiagram.DiagramAreas[0].AxisC.SupportArrow.LabelText = "SiO2 [%]";
+            ternaryDiagram.DiagramAreas[0].ValueGradient.Title = "Si content in the hot metal [ppm]";
 
             diagramDataGridView.AutoGenerateColumns = true;
             bindingSource1.DataMember = "SlagData";

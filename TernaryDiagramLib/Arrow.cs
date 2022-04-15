@@ -89,7 +89,7 @@ namespace TernaryDiagramLib
                 OnChanged(this, new PropertyChangedEventArgs("LabelFont"));
             }
         }
-        #endregion //Properties
+        #endregion // Properties
 
         #region Events
         public event PropertyChangedEventHandler PropertyChanged;
@@ -101,6 +101,6 @@ namespace TernaryDiagramLib
                 PropertyChanged(this, e);
             }
         }
-        #endregion //Events
+        #endregion // Events
     }
 }

@@ -121,8 +121,8 @@ namespace TernaryDiagramLib
         /// <param name="rightMargin">Miminum margin from right where you can draw triangle with labels and arrows<</param>
         public void Calculate(Rectangle bounds, int topMargin, int bottomMargin, int leftMargin, int rightMargin)
         {
-            float centerX = bounds.Height / 2;
-            float centerY = bounds.Width / 2;
+            float centerX = bounds.Left + bounds.Width / 2;
+            float centerY =  bounds.Top + bounds.Height / 2;
 
             // Length of equilateral triangle side
             int left_to_right = bounds.Width - leftMargin - rightMargin;
@@ -138,10 +138,10 @@ namespace TernaryDiagramLib
             float centering_margin = (bounds.Height - _height - topMargin - bottomMargin) / 2;
 
             // Vertexes
-            //  A
-            //B   C
-            float vaX = leftMargin + (bounds.Width - leftMargin - rightMargin) / 2;
-            float vaY = topMargin + centering_margin;
+            //   A
+            // B   C
+            float vaX = bounds.Left + leftMargin + (bounds.Width - leftMargin - rightMargin) / 2;
+            float vaY = bounds.Top + topMargin + centering_margin;
 
             float vbX = vaX - _sideLength / 2;
             float vbY = vaY + _height;

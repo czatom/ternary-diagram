@@ -15,7 +15,7 @@ namespace TernaryDiagramLib
         /// <returns>Returns true if ABC coordinates are the same</returns>
         public bool Equals(PointT p1, PointT p2)
         {
-            if (p1.ValueA == p2.ValueA && p1.ValueB == p2.ValueB && p1.ValueC == p2.ValueC)
+            if (p1.A == p2.A && p1.B == p2.B && p1.C == p2.C)
             {
                 return true;
             }
@@ -27,7 +27,7 @@ namespace TernaryDiagramLib
 
         public int GetHashCode(PointT p)
         {
-            return (int)(p.ValueA * p.ValueC + p.ValueB * p.ValueB + p.ValueC * p.ValueA);
+            return (int)(p.A * p.C + p.B * p.B + p.C * p.A);
         }
     }
 }
