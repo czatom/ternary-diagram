@@ -59,6 +59,7 @@
             this.toolStripButton9 = new System.Windows.Forms.ToolStripButton();
             this.diagramContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.saveToPNGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripButtonMultipleDiagrams = new System.Windows.Forms.ToolStripButton();
             this.ternaryDiagram = new TernaryDiagramLib.TernaryDiagram();
             this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
@@ -107,11 +108,11 @@
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.splitContainer1);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1368, 424);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1370, 680);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Name = "toolStripContainer1";
-            this.toolStripContainer1.Size = new System.Drawing.Size(1368, 471);
+            this.toolStripContainer1.Size = new System.Drawing.Size(1370, 727);
             this.toolStripContainer1.TabIndex = 0;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
@@ -124,7 +125,7 @@
             this.statusStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.statusStrip.Location = new System.Drawing.Point(0, 0);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(1368, 22);
+            this.statusStrip.Size = new System.Drawing.Size(1370, 22);
             this.statusStrip.TabIndex = 0;
             // 
             // splitContainer1
@@ -141,8 +142,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.propertyGrid1);
-            this.splitContainer1.Size = new System.Drawing.Size(1368, 424);
-            this.splitContainer1.SplitterDistance = 1067;
+            this.splitContainer1.Size = new System.Drawing.Size(1370, 680);
+            this.splitContainer1.SplitterDistance = 1069;
             this.splitContainer1.TabIndex = 0;
             // 
             // tabControl1
@@ -153,7 +154,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1067, 424);
+            this.tabControl1.Size = new System.Drawing.Size(1069, 680);
             this.tabControl1.TabIndex = 1;
             // 
             // tabPageDiagram
@@ -162,7 +163,7 @@
             this.tabPageDiagram.Location = new System.Drawing.Point(4, 22);
             this.tabPageDiagram.Name = "tabPageDiagram";
             this.tabPageDiagram.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageDiagram.Size = new System.Drawing.Size(1059, 398);
+            this.tabPageDiagram.Size = new System.Drawing.Size(1061, 654);
             this.tabPageDiagram.TabIndex = 0;
             this.tabPageDiagram.Text = "Diagram";
             this.tabPageDiagram.UseVisualStyleBackColor = true;
@@ -173,7 +174,7 @@
             this.tabPageData.Location = new System.Drawing.Point(4, 22);
             this.tabPageData.Name = "tabPageData";
             this.tabPageData.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageData.Size = new System.Drawing.Size(1059, 419);
+            this.tabPageData.Size = new System.Drawing.Size(1061, 675);
             this.tabPageData.TabIndex = 1;
             this.tabPageData.Text = "Data";
             this.tabPageData.UseVisualStyleBackColor = true;
@@ -191,7 +192,7 @@
             this.diagramDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.diagramDataGridView.Location = new System.Drawing.Point(3, 3);
             this.diagramDataGridView.Name = "diagramDataGridView";
-            this.diagramDataGridView.Size = new System.Drawing.Size(1053, 413);
+            this.diagramDataGridView.Size = new System.Drawing.Size(1055, 669);
             this.diagramDataGridView.TabIndex = 0;
             // 
             // aDataGridViewTextBoxColumn
@@ -238,10 +239,11 @@
             this.toolStripSeparator1,
             this.LoadSlagDataToolStripButton,
             this.toolStripSeparator2,
-            this.toolStripButton9});
+            this.toolStripButton9,
+            this.toolStripButtonMultipleDiagrams});
             this.mainToolStrip.Location = new System.Drawing.Point(0, 0);
             this.mainToolStrip.Name = "mainToolStrip";
-            this.mainToolStrip.Size = new System.Drawing.Size(1368, 25);
+            this.mainToolStrip.Size = new System.Drawing.Size(1370, 25);
             this.mainToolStrip.Stretch = true;
             this.mainToolStrip.TabIndex = 0;
             // 
@@ -307,6 +309,16 @@
             this.saveToPNGToolStripMenuItem.Text = "Save to PNG";
             this.saveToPNGToolStripMenuItem.Click += new System.EventHandler(this.SaveToPNGToolStripMenuItem_Click);
             // 
+            // toolStripButtonMultipleDiagrams
+            // 
+            this.toolStripButtonMultipleDiagrams.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripButtonMultipleDiagrams.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonMultipleDiagrams.Image")));
+            this.toolStripButtonMultipleDiagrams.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripButtonMultipleDiagrams.Name = "toolStripButtonMultipleDiagrams";
+            this.toolStripButtonMultipleDiagrams.Size = new System.Drawing.Size(107, 22);
+            this.toolStripButtonMultipleDiagrams.Text = "Multiple diagrams";
+            this.toolStripButtonMultipleDiagrams.Click += new System.EventHandler(this.toolStripButtonMultipleDiagrams_Click);
+            // 
             // ternaryDiagram
             // 
             diagramArea1.AxisA.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
@@ -329,6 +341,7 @@
             diagramArea1.AxisC.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
             diagramArea1.Margin = new System.Windows.Forms.Padding(0);
             diagramArea1.Name = "default";
+            diagramArea1.SourceDataTable = null;
             diagramArea1.Title = "";
             diagramArea1.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
             diagramArea2.AxisA.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
@@ -351,6 +364,7 @@
             diagramArea2.AxisC.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
             diagramArea2.Margin = new System.Windows.Forms.Padding(0);
             diagramArea2.Name = null;
+            diagramArea2.SourceDataTable = null;
             diagramArea2.Title = "";
             diagramArea2.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
             diagramArea3.AxisA.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
@@ -373,6 +387,7 @@
             diagramArea3.AxisC.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
             diagramArea3.Margin = new System.Windows.Forms.Padding(0);
             diagramArea3.Name = null;
+            diagramArea3.SourceDataTable = null;
             diagramArea3.Title = "";
             diagramArea3.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
             diagramArea4.AxisA.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
@@ -395,6 +410,7 @@
             diagramArea4.AxisC.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
             diagramArea4.Margin = new System.Windows.Forms.Padding(0);
             diagramArea4.Name = null;
+            diagramArea4.SourceDataTable = null;
             diagramArea4.Title = "";
             diagramArea4.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
             this.ternaryDiagram.DiagramAreas.Add(diagramArea1);
@@ -405,7 +421,7 @@
             this.ternaryDiagram.Location = new System.Drawing.Point(3, 3);
             this.ternaryDiagram.Margin = new System.Windows.Forms.Padding(3, 8, 3, 8);
             this.ternaryDiagram.Name = "ternaryDiagram";
-            this.ternaryDiagram.Size = new System.Drawing.Size(1053, 392);
+            this.ternaryDiagram.Size = new System.Drawing.Size(1055, 648);
             this.ternaryDiagram.TabIndex = 0;
             this.ternaryDiagram.Text = "ternaryDiagram";
             // 
@@ -415,14 +431,14 @@
             this.propertyGrid1.Location = new System.Drawing.Point(0, 0);
             this.propertyGrid1.Name = "propertyGrid1";
             this.propertyGrid1.SelectedObject = this.ternaryDiagram;
-            this.propertyGrid1.Size = new System.Drawing.Size(297, 424);
+            this.propertyGrid1.Size = new System.Drawing.Size(297, 680);
             this.propertyGrid1.TabIndex = 0;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1368, 471);
+            this.ClientSize = new System.Drawing.Size(1370, 727);
             this.Controls.Add(this.toolStripContainer1);
             this.Menu = this.mainMenu;
             this.Name = "Form1";
@@ -485,6 +501,7 @@
         private System.Windows.Forms.TabPage tabPageDiagram;
         private System.Windows.Forms.TabPage tabPageData;
         private TernaryDiagramLib.TernaryDiagram ternaryDiagram;
+        private System.Windows.Forms.ToolStripButton toolStripButtonMultipleDiagrams;
     }
 }
 

@@ -19,6 +19,8 @@ namespace TernaryDiagramLib
             _diagramDataTable.Columns.Add("C", typeof(double));
             _diagramDataTable.Columns.Add("Value", typeof(double));
 
+            _diagramPoints = new List<PointT>();
+
             this._axes = new Axis[3];
             this.axisA = new Axis("A");
             this.axisB = new Axis("B");
@@ -86,6 +88,16 @@ namespace TernaryDiagramLib
         public DataTable DiagramDataTable
         {
             get { return _diagramDataTable; }
+        }
+
+        List<PointT> _diagramPoints;
+        /// <summary>
+        /// Gets list of ternary diagram points
+        /// </summary>
+        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+        public List<PointT> DiagramPoints
+        {
+            get { return _diagramPoints; }
         }
 
         private string _name;
@@ -451,7 +463,6 @@ namespace TernaryDiagramLib
         /// <param name="dataColumnD">Source data column D</param>
         public void ValidateAndAddData(DataTable dataTable, DataColumn dataColumnA, DataColumn dataColumnB, DataColumn dataColumnC, DataColumn dataColumnD = null)
         {
-            // Reset min & max value
             var minVal = double.MaxValue;
             var maxVal = double.MinValue;
 
@@ -508,7 +519,8 @@ namespace TernaryDiagramLib
                 }
             }
 
-
+            ValueGradient.Minimum = minVal != double.MaxValue ? minVal : double.NaN;
+            ValueGradient.Maximum = maxVal != double.MinValue ? maxVal : double.NaN;
         }
 
         public override string ToString()

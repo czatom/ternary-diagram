@@ -24,10 +24,9 @@ namespace TernaryDiagramLib
 
             this.Margin = new Padding(3, 8, 3, 8);
 
-            _currentPoint = new PointT(0, 0, 0, 0, this);
+            _currentPoint = new PointT(0, 0, 0, 0, null);
             //_gradient.ExclusiveColors.AddRange(new int[] { _ab_to_bc_LineColor.ToArgb(), _bc_to_ca_LineColor.ToArgb(), _ca_to_ab_LineColor.ToArgb(), _triangleBorderColor.ToArgb(), _triangleBackgroundColor.ToArgb() });
             _zoomFactor = 0;
-            _diagramPoints = new List<PointT>();
             _backColor2 = Color.Transparent;
             _gradType = GradType.Vertical;
 
@@ -104,9 +103,6 @@ namespace TernaryDiagramLib
         // Zoom factor >= 1
         private float _zoomFactor;
         private bool _zoomEnabled = true;
-
-        // Points
-        private List<PointT> _diagramPoints;
 
         // Background gradient
         private Color _backColor2;
@@ -203,15 +199,6 @@ namespace TernaryDiagramLib
                 _gradType = value;
                 OnChanged(this, new PropertyChangedEventArgs("BackgroundGradientType"));
             }
-        }
-
-        /// <summary>
-        /// Gets list of ternary diagram points
-        /// </summary>
-        [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
-        public List<PointT> DiagramPoints
-        {
-            get { return _diagramPoints; }
         }
         #endregion // Properties
 
@@ -583,7 +570,7 @@ namespace TernaryDiagramLib
                     margLen = (int)Math.Max(gls1.Width, gls2.Width);
                 }
 
-                diagram.ValueGradient.Location = new Point(diagram.WorkingArea.Right - this.Margin.Right - valueGradient.Size.Width - margLen, diagram.Margin.Top);
+                diagram.ValueGradient.Location = new Point(diagram.WorkingArea.Right - diagram.Margin.Right - valueGradient.Size.Width - margLen, diagram.WorkingArea.Top + diagram.Margin.Top);
 
                 // Title
                 int titleMargin = 0;
@@ -593,7 +580,7 @@ namespace TernaryDiagramLib
                     float titleX = valueGradient.Location.X - (size.Width / 2) + (valueGradient.Size.Width / 2);
                     float titleY = valueGradient.Location.Y;
                     g.DrawString(valueGradient.Title, valueGradient.TitleFont, new SolidBrush(valueGradient.TitleColor), new Point((int)titleX, (int)titleY));
-                    titleMargin = (int)size.Height + 5;
+                    titleMargin = (int)size.Height + 15;
                 }
 
                 Point location = valueGradient.Location;
@@ -647,15 +634,15 @@ namespace TernaryDiagramLib
                     //TODO: try something else
                     double value = dataRow[3] != System.DBNull.Value ? (double)dataRow[3] : valueGradient.Maximum;
 
-                    PointT abc = new PointT(percA, percB, percC, value, this);
-                    _diagramPoints.Add(abc);
+                    PointT abc = new PointT(percA, percB, percC, value, diagram);
+                    diagram.DiagramPoints.Add(abc);
 
                     
                     double percV = (value - valueGradient.Minimum) / (valueGradient.Maximum - valueGradient.Minimum);
                     Color pointColor = valueGradient.GetColorAtValue((float)percV);
                     
                     // Draw point
-                    switch (this.DiagramAreas[0].MarkerType)
+                    switch (diagram.MarkerType)
                     {
                         case MarkerType.Circle:
                             g.FillEllipse(new SolidBrush(pointColor), abc.MarkerRect);
@@ -781,11 +768,13 @@ namespace TernaryDiagramLib
         /// <returns>If correct point was found, then PointT object with diagram coordinates is returned, otherwise PointT object but with NaN coordinates</returns>
         public PointT ScreenToDiagramPoint(float px, float py)
         {
-            var nullPoint = new PointT(float.NaN, float.NaN, float.NaN, float.NaN, this);
-            if (!this.DiagramAreas.Any()) return nullPoint;
-            DiagramArea diagram = this.DiagramAreas[0];
+            var nullPoint = new PointT(float.NaN, float.NaN, float.NaN, float.NaN, null);
 
-            if (diagram.DiagramTriangle.Path == null || diagram.DiagramTriangle.Path.PointCount == 0) return nullPoint;
+            // Find diagram area that the mouse cursor is pointing to
+            DiagramArea diagram = this.DiagramAreas.FirstOrDefault(da=>da.WorkingArea.Contains((int)px, (int)py));
+
+            if (diagram == null || diagram.DiagramTriangle.Path == null || diagram.DiagramTriangle.Path.PointCount == 0) return nullPoint;
+
             PointF[] tpts = new PointF[diagram.DiagramTriangle.Path.PointCount];
             tpts = diagram.DiagramTriangle.Path.PathPoints;
             _transformMatrix.TransformPoints(tpts);
@@ -825,7 +814,7 @@ namespace TernaryDiagramLib
                 float Aval = lenCav * 100 / tSideLength;
 
                 float Bval = 100 - Cval - Aval;
-                return new PointT(Aval, Bval, Cval, double.NaN, this);
+                return new PointT(Aval, Bval, Cval, double.NaN, null);
             }
             else
             {

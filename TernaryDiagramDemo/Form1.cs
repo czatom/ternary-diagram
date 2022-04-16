@@ -3,6 +3,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using TernaryDiagramLib;
 
 namespace TernaryDiagram
 {
@@ -127,6 +128,95 @@ namespace TernaryDiagram
         private void MenuItemExit_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void toolStripButtonMultipleDiagrams_Click(object sender, EventArgs e)
+        {
+            ternaryDiagram.DiagramAreas.Clear();
+            
+            // Fist
+            var diagramArea1 = new DiagramArea()
+            {
+                Title = "Slag data vs Si content",
+            };
+
+            diagramArea1.AxisA.Title = "CaO";
+            diagramArea1.AxisB.Title = "FeO";
+            diagramArea1.AxisC.Title = "SiO2";
+            diagramArea1.AxisA.SupportArrow.LabelText = "CaO [%]";
+            diagramArea1.AxisB.SupportArrow.LabelText = "FeO [%]";
+            diagramArea1.AxisC.SupportArrow.LabelText = "SiO2 [%]";
+            diagramArea1.ValueGradient.Title = "Si content [ppm]";
+            diagramArea1.LoadData(diagramDataSet.SlagData,
+                    diagramDataSet.SlagData.CaO_tColumn,
+                    diagramDataSet.SlagData.FeOn_tColumn,
+                    diagramDataSet.SlagData.SiO2_tColumn,
+                    diagramDataSet.SlagData.SiColumn);
+
+            ternaryDiagram.DiagramAreas.Add(diagramArea1);
+
+            // Second
+            var diagramArea2 = new DiagramArea()
+            {
+                Title = "Slag data vs Al2O3 content",
+            };
+
+            diagramArea2.AxisA.Title = "CaO";
+            diagramArea2.AxisB.Title = "FeO";
+            diagramArea2.AxisC.Title = "SiO2";
+            diagramArea2.AxisA.SupportArrow.LabelText = "CaO [%]";
+            diagramArea2.AxisB.SupportArrow.LabelText = "FeO [%]";
+            diagramArea2.AxisC.SupportArrow.LabelText = "SiO2 [%]";
+            diagramArea2.ValueGradient.Title = "Al2O3 content [%]";
+            diagramArea2.LoadData(diagramDataSet.SlagData,
+                    diagramDataSet.SlagData.CaO_tColumn,
+                    diagramDataSet.SlagData.FeOn_tColumn,
+                    diagramDataSet.SlagData.SiO2_tColumn,
+                    diagramDataSet.SlagData.Al2O3Column);
+
+            ternaryDiagram.DiagramAreas.Add(diagramArea2);
+
+            // Third
+            var diagramArea3 = new DiagramArea()
+            {
+                Title = "Slag data vs MgO content",
+            };
+
+            diagramArea3.AxisA.Title = "CaO";
+            diagramArea3.AxisB.Title = "FeO";
+            diagramArea3.AxisC.Title = "SiO2";
+            diagramArea3.AxisA.SupportArrow.LabelText = "CaO [%]";
+            diagramArea3.AxisB.SupportArrow.LabelText = "FeO [%]";
+            diagramArea3.AxisC.SupportArrow.LabelText = "SiO2 [%]";
+            diagramArea3.ValueGradient.Title = "MgO content [%]";
+            diagramArea3.LoadData(diagramDataSet.SlagData,
+                    diagramDataSet.SlagData.CaO_tColumn,
+                    diagramDataSet.SlagData.FeOn_tColumn,
+                    diagramDataSet.SlagData.SiO2_tColumn,
+                    diagramDataSet.SlagData.MgOColumn);
+
+            ternaryDiagram.DiagramAreas.Add(diagramArea3);
+
+            // Fourth
+            var diagramArea4 = new DiagramArea()
+            {
+                Title = "Slag data vs P2O5 content",
+            };
+
+            diagramArea4.AxisA.Title = "CaO";
+            diagramArea4.AxisB.Title = "FeO";
+            diagramArea4.AxisC.Title = "SiO2";
+            diagramArea4.AxisA.SupportArrow.LabelText = "CaO [%]";
+            diagramArea4.AxisB.SupportArrow.LabelText = "FeO [%]";
+            diagramArea4.AxisC.SupportArrow.LabelText = "SiO2 [%]";
+            diagramArea4.ValueGradient.Title = "P2O5 content [%]";
+            diagramArea4.LoadData(diagramDataSet.SlagData,
+                    diagramDataSet.SlagData.CaO_tColumn,
+                    diagramDataSet.SlagData.FeOn_tColumn,
+                    diagramDataSet.SlagData.SiO2_tColumn,
+                    diagramDataSet.SlagData.P2O5Column);
+
+            ternaryDiagram.DiagramAreas.Add(diagramArea4);
         }
     }
 }

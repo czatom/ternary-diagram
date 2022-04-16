@@ -13,7 +13,7 @@ namespace TernaryDiagramLib
         /// <param name="c">C coordinate</param>
         /// <param name="value">Value</param>
         /// <param name="diagram">Ternary diagram reference</param>
-        public PointT(float a, float b, float c, double value, TernaryDiagram diagram)
+        public PointT(float a, float b, float c, double value, DiagramArea diagram)
         {
             this.A = a;
             this.B = b;
@@ -23,7 +23,7 @@ namespace TernaryDiagramLib
         }
 
         #region Variables
-        private readonly TernaryDiagram _diagram;
+        private readonly DiagramArea _diagram;
         #endregion // Variables
 
         #region Properties
@@ -65,12 +65,11 @@ namespace TernaryDiagramLib
         {
             get
             {
-                DiagramArea diagram = _diagram.DiagramAreas[0];
                 PointF abc = RealCoords();
                 RectangleF rect = new RectangleF();
-                rect.X = abc.X - diagram.MarkerSize / 2;
-                rect.Y = abc.Y - diagram.MarkerSize / 2;
-                rect.Size = new SizeF(diagram.MarkerSize, diagram.MarkerSize);
+                rect.X = abc.X - _diagram.MarkerSize / 2;
+                rect.Y = abc.Y - _diagram.MarkerSize / 2;
+                rect.Size = new SizeF(_diagram.MarkerSize, _diagram.MarkerSize);
                 return rect;
             }
         }
@@ -83,7 +82,7 @@ namespace TernaryDiagramLib
         /// <returns>XY point</returns>
         private PointF RealCoords()
         {
-            Triangle triangle = this._diagram.DiagramAreas[0].DiagramTriangle;
+            Triangle triangle = _diagram.DiagramTriangle;
             // B value on AB axis
             float abX = triangle.VertexA.X - (B * (triangle.SideLength / (2 * 100)));
             float abY = triangle.VertexA.Y + (B * (triangle.Height / 100));
@@ -120,7 +119,7 @@ namespace TernaryDiagramLib
             if (pointObj == null)
                 return false;
             else
-                return A.Equals(pointObj.A) && B.Equals(pointObj.B) && C.Equals(pointObj.C) && pointObj._diagram.Equals(_diagram); //TODO do we need to compare values?
+                return A.Equals(pointObj.A) && B.Equals(pointObj.B) && C.Equals(pointObj.C) && pointObj._diagram == _diagram; //TODO do we need to compare values?
         }
 
         public override int GetHashCode()
