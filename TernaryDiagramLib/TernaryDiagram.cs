@@ -97,9 +97,6 @@ namespace TernaryDiagramLib
         // Point on the screen with mouse cursor on it
         private PointT _currentPoint;
 
-        // Transformation matrix
-        private Matrix _transformMatrix = new Matrix();
-
         // Zoom factor >= 1
         private float _zoomFactor;
         private bool _zoomEnabled = true;
@@ -224,10 +221,12 @@ namespace TernaryDiagramLib
             else base.OnPaintBackground(e);
         }
 
-        private void CalculateAreasInnerPositionsAndSizes(PaintEventArgs e)
+        /// <summary>
+        /// Calculates position and size for each DiagramArea 
+        /// </summary>
+        /// <param name="controlWorkspace">The working area of the control</param>
+        private void CalculateAreasInnerPositionsAndSizes(Rectangle controlWorkspace)
         {
-            // Get the working area of the control
-            var controlWorkspace = e.ClipRectangle;
             // Taking into account margins
             var newX = controlWorkspace.Left + this.Margin.Left;
             var newY = controlWorkspace.Top + this.Margin.Top;
@@ -272,7 +271,8 @@ namespace TernaryDiagramLib
         {
             base.OnPaint(e);
 
-            CalculateAreasInnerPositionsAndSizes(e);
+            // Get the position and size for each DiagramArea
+            CalculateAreasInnerPositionsAndSizes(e.ClipRectangle);
 
             foreach (var diagram in _diagramAreas)
             {
@@ -298,7 +298,7 @@ namespace TernaryDiagramLib
                 }
 
                 // Zooming
-                Matrix matrix = this._transformMatrix.Clone();
+                Matrix matrix = diagram.TransformMatrix.Clone();
                 g.Transform = matrix;
 
                 // Correct bottom margin
@@ -371,7 +371,7 @@ namespace TernaryDiagramLib
                     // Scale labels
                     string textAB = String.Format("{0}%", 100 * i / stepNum);
                     SizeF textABSize = g.MeasureString(textAB, diagram.AxisB.LabelFont);
-                    Matrix m = this._transformMatrix.Clone();
+                    Matrix m = diagram.TransformMatrix.Clone();
                     m.RotateAt(60, new PointF(abX, abY), MatrixOrder.Prepend);
                     g.Transform = m;
                     g.DrawString(textAB, diagram.AxisB.LabelFont, new SolidBrush(diagram.AxisB.LabelColor), abX - textABSize.Width, abY - textABSize.Height / 2);
@@ -380,7 +380,7 @@ namespace TernaryDiagramLib
 
                     string textBC = String.Format("{0}%", 100 - (100 * i / stepNum));
                     SizeF textBCSize = g.MeasureString(textBC, diagram.AxisC.LabelFont);
-                    m = this._transformMatrix.Clone();
+                    m = diagram.TransformMatrix.Clone();
                     m.RotateAt(-60, new PointF(bcX, bcY + 15), MatrixOrder.Prepend);
                     g.Transform = m;
                     g.DrawString(textBC, diagram.AxisC.LabelFont, new SolidBrush(diagram.AxisC.LabelColor), bcX - textBCSize.Width / 2, bcY - textBCSize.Height / 2 + 15);
@@ -412,7 +412,7 @@ namespace TernaryDiagramLib
                 // CA
                 if (diagram.AxisA.SupportArrow.Enabled)
                 {
-                    rot = this._transformMatrix.Clone();
+                    rot = diagram.TransformMatrix.Clone();
                     rot.RotateAt(60, new PointF(diagram.DiagramTriangle.VertexA.X, diagram.DiagramTriangle.VertexA.Y + 2 * diagram.DiagramTriangle.Height / 3));
                     g.Transform = rot;
                     g.DrawLine(new Pen(diagram.AxisA.SupportArrow.Color, 1), p1L, p2L);
@@ -428,7 +428,7 @@ namespace TernaryDiagramLib
                 // BC
                 if (diagram.AxisC.SupportArrow.Enabled)
                 {
-                    rot = this._transformMatrix.Clone();
+                    rot = diagram.TransformMatrix.Clone();
                     rot.RotateAt(180, new PointF(diagram.DiagramTriangle.VertexA.X, diagram.DiagramTriangle.VertexA.Y + 2 * diagram.DiagramTriangle.Height / 3));
                     g.Transform = rot;
                     g.DrawLine(new Pen(diagram.AxisC.SupportArrow.Color, 1), p1L, p2L);
@@ -449,7 +449,7 @@ namespace TernaryDiagramLib
                 // AB
                 if (diagram.AxisB.SupportArrow.Enabled)
                 {
-                    rot = this._transformMatrix.Clone();
+                    rot = diagram.TransformMatrix.Clone();
                     rot.RotateAt(-60, new PointF(diagram.DiagramTriangle.VertexA.X, diagram.DiagramTriangle.VertexA.Y + 2 * diagram.DiagramTriangle.Height / 3));
                     g.Transform = rot;
                     g.DrawLine(new Pen(diagram.AxisB.SupportArrow.Color, 1), p1L, p2L);
@@ -714,12 +714,15 @@ namespace TernaryDiagramLib
 
         private void ZoomToPoint(float scale, Point origin)
         {
-            Matrix matrix = this._transformMatrix;
+            // Find diagram area that the mouse cursor is pointing to
+            DiagramArea diagram = this.DiagramAreas.FirstOrDefault(da => da.WorkingArea.Contains(origin.X, origin.Y));
+
+            Matrix matrix = diagram.TransformMatrix;
             matrix.Translate(-origin.X, -origin.Y, MatrixOrder.Append);
             matrix.Scale(scale, scale, MatrixOrder.Append);
             matrix.Translate(origin.X, origin.Y, MatrixOrder.Append);
 
-            this._transformMatrix = matrix;
+            diagram.TransformMatrix = matrix;
         }
 
         /// <summary>
@@ -777,7 +780,7 @@ namespace TernaryDiagramLib
 
             PointF[] tpts = new PointF[diagram.DiagramTriangle.Path.PointCount];
             tpts = diagram.DiagramTriangle.Path.PathPoints;
-            _transformMatrix.TransformPoints(tpts);
+            diagram.TransformMatrix.TransformPoints(tpts);
             GraphicsPath path = new GraphicsPath(tpts, diagram.DiagramTriangle.Path.PathTypes);
             path.CloseAllFigures();
 
@@ -794,7 +797,7 @@ namespace TernaryDiagramLib
 
                 // Tranform points according to scale of the triangle
                 PointF[] pts = new PointF[] { diagram.DiagramTriangle.VertexA, diagram.DiagramTriangle.VertexB, diagram.DiagramTriangle.VertexC };
-                _transformMatrix.TransformPoints(pts);
+                diagram.TransformMatrix.TransformPoints(pts);
                 float tSideLength = pts[2].X - pts[1].X;
 
                 float coefAab = (pts[0].Y - pts[1].Y) / (pts[0].X - pts[1].X);

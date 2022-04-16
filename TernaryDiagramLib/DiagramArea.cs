@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace TernaryDiagramLib
@@ -64,8 +65,8 @@ namespace TernaryDiagramLib
         {
             typeof(decimal), typeof(byte), typeof(sbyte), typeof(short), typeof(ushort), typeof(int), typeof(uint), typeof(double)
         };
-        #region Properties
 
+        #region Properties
         private DataTable _sourceDataTable;
         /// <summary>
         /// Source data table
@@ -290,6 +291,20 @@ namespace TernaryDiagramLib
                 _markerType = value;
                 OnChanged(this, new PropertyChangedEventArgs("MarkerType"));
             }
+        }
+
+        private Matrix _transformMatrix = new Matrix();
+        /// <summary>
+        /// Transformation matrix used for zooming
+        /// </summary>
+        [Category("Appearance")]
+        [Description("Transformation matrix")]
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Matrix TransformMatrix
+        {
+            get { return _transformMatrix; }
+            set { _transformMatrix = value; }
         }
 
         private Color _backColor1;
