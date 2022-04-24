@@ -6,13 +6,25 @@ namespace TernaryDiagramLib
 {
     public class Axis : DiagramElement, INotifyPropertyChanged
     {
-        internal void Initialize()
+        internal void Initialize(string axis_name="")
         {
-            this._titleFont = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Bold);
-            this._titleColor = Color.Black;
-            this._labelFont = new Font(FontFamily.GenericSansSerif, 10);
-            this._labelColor = Color.Black;
-            this._grid = new Grid();
+            this._name = axis_name;
+            this._title = axis_name;
+
+            this._supportArrow = new Arrow();
+            this._supportArrow.LabelText = axis_name;
+            SupportArrow.PropertyChanged += OnChanged;
+
+            _titleFont = new Font(FontFamily.GenericSansSerif, 12, FontStyle.Bold);
+            _titleColor = Color.Black;
+            _labelFont = new Font(FontFamily.GenericSansSerif, 10);
+            _labelColor = Color.Black;
+            
+            _grid = new Grid();
+            Grid.PropertyChanged += OnChanged;
+
+            _minimum = 0;
+            _maximum = 100;
         }
 
         /// <summary>
@@ -20,9 +32,6 @@ namespace TernaryDiagramLib
         /// </summary>
         public Axis()
         {
-            this._name = "";
-            this._title = "";
-            this._supportArrow = new Arrow();
             this.Initialize();
         }
 
@@ -32,14 +41,48 @@ namespace TernaryDiagramLib
         /// <param name="axis_name">Name of the axis</param>
         public Axis(string axis_name)
         {
-            this._name = axis_name;
-            this._title = axis_name;
-            this._supportArrow = new Arrow();
-            this._supportArrow.LabelText = axis_name;
             this.Initialize();
         }
 
         #region Properties
+        private float _minimum;
+        /// <summary>
+        /// Minimum value on the axis
+        /// </summary>
+        [Category("Scale")]
+        [Description("Minimum value on the axis")]
+        public float Minimum
+        {
+            get { return _minimum; }
+            set 
+            {
+                if (value >= 0 && value <= 100 && value < Maximum)
+                {
+                    _minimum = value;
+                    OnChanged(this, new PropertyChangedEventArgs("Minimum"));
+                }
+            }
+        }
+
+        private float _maximum;
+        /// <summary>
+        /// Maximum value on the axis
+        /// </summary>
+        [Category("Scale")]
+        [Description("Maximum value on the axis")]
+        public float Maximum
+        {
+            get { return _maximum; }
+            set
+            {
+                if (value >= 0 && value <= 100 && value > Minimum)
+                {
+                    _maximum = value;
+                    OnChanged(this, new PropertyChangedEventArgs("Maximum"));
+                }
+            }
+        }
+
         private string _name;
         [Category("Design")]
         [Description("Name of the axis")]
@@ -170,29 +213,13 @@ namespace TernaryDiagramLib
         private event PropertyChangedEventHandler _propertyChanged;
         public event PropertyChangedEventHandler PropertyChanged
         {
-            add
-            {
-                bool first = _propertyChanged == null;
-                _propertyChanged += value;
-                if (first && _propertyChanged != null)
-                {
-                    Grid.PropertyChanged += OnChanged;
-                    SupportArrow.PropertyChanged += OnChanged;
-                }
-            }
-            remove
-            {
-                Grid.PropertyChanged -= OnChanged;
-                SupportArrow.PropertyChanged -= OnChanged;
-            }
+            add => _propertyChanged += value;
+            remove => _propertyChanged -= value;
         }
 
         private void OnChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (_propertyChanged != null)
-            {
-                _propertyChanged(this, e);
-            }
+            _propertyChanged?.Invoke(this, e);
         }
         #endregion // Events
     }

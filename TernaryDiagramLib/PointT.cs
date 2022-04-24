@@ -33,7 +33,7 @@ namespace TernaryDiagramLib
         public float A { get; set; }
 
         /// <summary>
-        /// Gets or sets value of B coodinate
+        /// Gets or sets value of B coordinate
         /// </summary>
         public float B { get; set; }
 
@@ -83,26 +83,31 @@ namespace TernaryDiagramLib
         private PointF RealCoords()
         {
             Triangle triangle = _diagram.DiagramTriangle;
+
             // B value on AB axis
-            float abX = triangle.VertexA.X - (B * (triangle.SideLength / (2 * 100)));
-            float abY = triangle.VertexA.Y + (B * (triangle.Height / 100));
+            float bPctRange = _diagram.AxisB.Maximum - _diagram.AxisB.Minimum;
+            float abX = triangle.VertexA.X - (B - _diagram.AxisB.Minimum) * (triangle.SideLength / (2 * bPctRange));
+            float abY = triangle.VertexA.Y + (B - _diagram.AxisB.Minimum) * (triangle.Height / bPctRange);
             PointF axisBval = new PointF(abX, abY);
 
             // C value on BC axis
-            float bcX = triangle.VertexB.X + (C * (triangle.SideLength / 100));
+            float cPctRange = _diagram.AxisC.Maximum - _diagram.AxisC.Minimum;
+            float onePctInPixels = triangle.SideLength / cPctRange;
+            float bcX = triangle.VertexB.X + (C - _diagram.AxisC.Minimum) * onePctInPixels;
             float bcY = triangle.VertexB.Y;
             PointF axisCval = new PointF(bcX, bcY);
 
             // A value on CA axis
-            float caX = triangle.VertexC.X - (A * (triangle.SideLength / (2 * 100)));
-            float caY = triangle.VertexC.Y - (A * (triangle.Height / 100));
+            float aPctRange = _diagram.AxisA.Maximum - _diagram.AxisA.Minimum;
+            float caX = triangle.VertexC.X - (A - _diagram.AxisA.Minimum) * (triangle.SideLength / (2 * aPctRange));
+            float caY = triangle.VertexC.Y - (A - _diagram.AxisA.Minimum) * (triangle.Height / aPctRange);
             PointF axisAval = new PointF(caX, caY);
 
             // y=ax+b
-            // Coef "a" of line creating axis AB
+            // Coefficient "a" of line creating axis AB
             float coefAab = (triangle.VertexA.Y - triangle.VertexB.Y) / (triangle.VertexA.X - triangle.VertexB.X);
 
-            // Coef "b" of line going through the diagram point given by percA, perB and percC and crossing axis BC
+            // Coefficient "b" of line going through the diagram point given by percA, perB and percC and crossing axis BC
             float coefBbcv = bcY - coefAab * bcX;
 
             // Point ABC

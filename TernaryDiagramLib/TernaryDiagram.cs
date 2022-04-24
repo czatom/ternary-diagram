@@ -35,7 +35,7 @@ namespace TernaryDiagramLib
             this.PropertyChanged += TernaryDiagram_PropertyChanged;
 
             _diagramAreas = new DiagramAreaCollection();
-            _diagramAreas.CollectionChanged += _diagramAreas_CollectionChanged;
+            _diagramAreas.CollectionChanged += DiagramAreas_CollectionChanged;
 
             this.Size = new Size(380, 220);
         }
@@ -143,7 +143,7 @@ namespace TernaryDiagramLib
             set { _zoomEnabled = value; }
         }
 
-        [Description("Background color of the control. If background gradient is eneabled then it is mixed with second back color.")]
+        [Description("Background color of the control. If background gradient is enabled then it is mixed with second back color.")]
         public override Color BackColor
         {
             get
@@ -278,6 +278,7 @@ namespace TernaryDiagramLib
             {
                 Rectangle bounds = diagram.WorkingArea;
                 Graphics g = e.Graphics;
+
                 // Tuning graphics
                 g.TextRenderingHint = TextRenderingHint.AntiAlias;
                 g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -311,10 +312,11 @@ namespace TernaryDiagramLib
                 int leftMargin = diagram.Margin.Left + (int)leftLabelSize.Width + 3;
                 int rightMargin = diagram.Margin.Right + (int)rightLabelSize.Width + 3;
 
+                // Triangle
                 diagram.DiagramTriangle.Calculate(bounds, topMargin, bottomMargin, leftMargin, rightMargin);
 
                 // Diagram scale "resolution"
-                float stepNum = 10;// Scale labels and lines every stepNum %
+                float stepCount = 10;// Scale labels and lines every stepCount %
 
                 float maxFontSize = diagram.Axes.Max(n => n.LabelFont.Size);
                 Axis largestFontAxis = diagram.Axes.First(x => x.LabelFont.Size == maxFontSize);
@@ -325,35 +327,35 @@ namespace TernaryDiagramLib
                 {
                     // Acceptable resolutions
                     float[] resolutions = new float[] { 10, 5, 4, 2 };
-                    while ((diagram.DiagramTriangle.SideLength < stepNum * axisLabelsSize.Width && stepNum >= 0) || (!resolutions.Contains(stepNum) && stepNum >= 0))
+                    while ((diagram.DiagramTriangle.SideLength < stepCount * axisLabelsSize.Width && stepCount >= 0) || (!resolutions.Contains(stepCount) && stepCount >= 0))
                     {
-                        stepNum--;
+                        stepCount--;
                     }
                 }
 
                 // Triangle background
                 g.FillPath(new SolidBrush(diagram.DiagramTriangle.BackColor), diagram.DiagramTriangle.Path);
 
-                for (int i = 1; i < stepNum; i++)
+                for (int step = 1; step < stepCount; step++)
                 {
                     // Chart support lines
-                    float abX = diagram.DiagramTriangle.VertexA.X - (i * (diagram.DiagramTriangle.SideLength / (2 * stepNum)));
-                    float abY = diagram.DiagramTriangle.VertexA.Y + (i * (diagram.DiagramTriangle.Height / stepNum));
+                    float abX = diagram.DiagramTriangle.VertexA.X - (step * (diagram.DiagramTriangle.SideLength / (2 * stepCount)));
+                    float abY = diagram.DiagramTriangle.VertexA.Y + (step * (diagram.DiagramTriangle.Height / stepCount));
                     // Point on AB axis
                     PointF ab = new PointF(abX, abY);
 
-                    float bcX = diagram.DiagramTriangle.VertexC.X - (i * (diagram.DiagramTriangle.SideLength / stepNum));
+                    float bcX = diagram.DiagramTriangle.VertexC.X - (step * (diagram.DiagramTriangle.SideLength / stepCount));
                     float bcY = diagram.DiagramTriangle.VertexC.Y;
                     // Point on BC axis
                     PointF bc = new PointF(bcX, bcY);
 
-                    float caX = diagram.DiagramTriangle.VertexA.X + (i * (diagram.DiagramTriangle.SideLength / (2 * stepNum)));
-                    float caY = diagram.DiagramTriangle.VertexA.Y + (i * (diagram.DiagramTriangle.Height / stepNum));
+                    float caX = diagram.DiagramTriangle.VertexA.X + (step * (diagram.DiagramTriangle.SideLength / (2 * stepCount)));
+                    float caY = diagram.DiagramTriangle.VertexA.Y + (step * (diagram.DiagramTriangle.Height / stepCount));
                     // Reversed point on CA axis
                     PointF ca = new PointF(caX, caY);
 
-                    float caX2 = diagram.DiagramTriangle.VertexC.X - (i * (diagram.DiagramTriangle.SideLength / (2 * stepNum)));
-                    float caY2 = diagram.DiagramTriangle.VertexC.Y - (i * (diagram.DiagramTriangle.Height / stepNum));
+                    float caX2 = diagram.DiagramTriangle.VertexC.X - (step * (diagram.DiagramTriangle.SideLength / (2 * stepCount)));
+                    float caY2 = diagram.DiagramTriangle.VertexC.Y - (step * (diagram.DiagramTriangle.Height / stepCount));
                     // Point on CA axis 
                     PointF ca2 = new PointF(caX2, caY2);
 
@@ -369,7 +371,8 @@ namespace TernaryDiagramLib
                     if (diagram.AxisA.Grid.Enabled) g.DrawLine(p3, ca, ab);
 
                     // Scale labels
-                    string textAB = String.Format("{0}%", 100 * i / stepNum);
+                    var distanceAB = diagram.AxisB.Maximum - diagram.AxisB.Minimum;
+                    string textAB = String.Format("{0}%", diagram.AxisB.Minimum + (distanceAB * step / stepCount));
                     SizeF textABSize = g.MeasureString(textAB, diagram.AxisB.LabelFont);
                     Matrix m = diagram.TransformMatrix.Clone();
                     m.RotateAt(60, new PointF(abX, abY), MatrixOrder.Prepend);
@@ -377,8 +380,8 @@ namespace TernaryDiagramLib
                     g.DrawString(textAB, diagram.AxisB.LabelFont, new SolidBrush(diagram.AxisB.LabelColor), abX - textABSize.Width, abY - textABSize.Height / 2);
                     g.Transform = matrix;
 
-
-                    string textBC = String.Format("{0}%", 100 - (100 * i / stepNum));
+                    var distanceBC = diagram.AxisC.Maximum - diagram.AxisC.Minimum;
+                    string textBC = String.Format("{0}%", diagram.AxisC.Maximum - (distanceBC * step / stepCount));
                     SizeF textBCSize = g.MeasureString(textBC, diagram.AxisC.LabelFont);
                     m = diagram.TransformMatrix.Clone();
                     m.RotateAt(-60, new PointF(bcX, bcY + 15), MatrixOrder.Prepend);
@@ -386,7 +389,8 @@ namespace TernaryDiagramLib
                     g.DrawString(textBC, diagram.AxisC.LabelFont, new SolidBrush(diagram.AxisC.LabelColor), bcX - textBCSize.Width / 2, bcY - textBCSize.Height / 2 + 15);
                     g.Transform = matrix;
 
-                    string textCA = String.Format("{0}%", 100 * i / stepNum);
+                    var distanceCA = diagram.AxisA.Maximum - diagram.AxisA.Minimum;
+                    string textCA = String.Format("{0}%", diagram.AxisA.Minimum + (distanceCA * step / stepCount));
                     SizeF textCASize = g.MeasureString(textCA, diagram.AxisA.LabelFont);
                     g.DrawString(textCA, diagram.AxisA.LabelFont, new SolidBrush(diagram.AxisA.LabelColor), caX2 + 5, caY2 - textABSize.Height / 2);
                 }
@@ -484,21 +488,21 @@ namespace TernaryDiagramLib
             }
         }
 
-        void area_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void Area_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             this.Invalidate();
         }
 
-        void _diagramAreas_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void DiagramAreas_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             foreach (DiagramArea area in _diagramAreas)
             {
-                area.PropertyChanged -= area_PropertyChanged;
-                area.PropertyChanged += area_PropertyChanged;
+                area.PropertyChanged -= Area_PropertyChanged;
+                area.PropertyChanged += Area_PropertyChanged;
             }
         }
 
-        void TernaryDiagram_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void TernaryDiagram_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             this.Invalidate();
         }
@@ -728,33 +732,37 @@ namespace TernaryDiagramLib
         /// <summary>
         /// Computes the location of ABC diagram point in control coordinates
         /// </summary>
-        /// <param name="_coordA"></param>
-        /// <param name="_coordB"></param>
-        /// <param name="_coordC"></param>
+        /// <param name="_coordA">Ternary coordinate A</param>
+        /// <param name="_coordB">Ternary coordinate B</param>
+        /// <param name="_coordC">Ternary coordinate C</param>
+        /// <param name="diagram">The diagram area</param>
         /// <returns>PointF object with control coordinates</returns>
-        public PointF DiagramToScreenPoint(float _coordA, float _coordB, float _coordC)
+        public PointF DiagramToScreenPoint(DiagramArea diagram, float _coordA, float _coordB, float _coordC)
         {
             // B value on AB axis
-            DiagramArea diagram = this.DiagramAreas[0];
-            float abX = diagram.DiagramTriangle.VertexA.X - (_coordB * (diagram.DiagramTriangle.SideLength / (2 * 100)));
-            float abY = diagram.DiagramTriangle.VertexA.Y + (_coordB * (diagram.DiagramTriangle.Height / 100));
+            float bPctRange = diagram.AxisB.Maximum - diagram.AxisB.Minimum;
+            float abX = diagram.DiagramTriangle.VertexA.X - (_coordB - diagram.AxisB.Minimum) * (diagram.DiagramTriangle.SideLength / (2 * bPctRange));
+            float abY = diagram.DiagramTriangle.VertexA.Y + (_coordB - diagram.AxisB.Minimum) * (diagram.DiagramTriangle.Height / bPctRange);
             PointF axisBval = new PointF(abX, abY);
 
             // C value on BC axis
-            float bcX = diagram.DiagramTriangle.VertexB.X + (_coordC * (diagram.DiagramTriangle.SideLength / 100));
+            float cPctRange = diagram.AxisC.Maximum - diagram.AxisC.Minimum;
+            float onePctInPixels = diagram.DiagramTriangle.SideLength / cPctRange;
+            float bcX = diagram.DiagramTriangle.VertexB.X + (_coordC - diagram.AxisC.Minimum) * onePctInPixels;
             float bcY = diagram.DiagramTriangle.VertexB.Y;
             PointF axisCval = new PointF(bcX, bcY);
 
             // A value on CA axis
-            float caX = diagram.DiagramTriangle.VertexC.X - (_coordA * (diagram.DiagramTriangle.SideLength / (2 * 100)));
-            float caY = diagram.DiagramTriangle.VertexC.Y - (_coordA * (diagram.DiagramTriangle.Height / 100));
+            float aPctRange = diagram.AxisA.Maximum - diagram.AxisA.Minimum;
+            float caX = diagram.DiagramTriangle.VertexC.X - (_coordA - diagram.AxisA.Minimum) * (diagram.DiagramTriangle.SideLength / (2 * aPctRange));
+            float caY = diagram.DiagramTriangle.VertexC.Y - (_coordA - diagram.AxisA.Minimum) * (diagram.DiagramTriangle.Height / aPctRange);
             PointF axisAval = new PointF(caX, caY);
 
             // y=ax+b
-            // Coef "a" of line creating axis AB
+            // Coefficient "a" of line creating axis AB
             float coefAab = (diagram.DiagramTriangle.VertexA.Y - diagram.DiagramTriangle.VertexB.Y) / (diagram.DiagramTriangle.VertexA.X - diagram.DiagramTriangle.VertexB.X);
 
-            // Coef "b" of line going through the diagram point given by percA, percB and percC and crossing axis BC
+            // Coefficient "b" of line going through the diagram point given by percA, percB and percC and crossing axis BC
             float coefBbcv = bcY - coefAab * bcX;
 
             // Point ABC
@@ -795,10 +803,10 @@ namespace TernaryDiagramLib
                 //double range = _gradient.GetValueByColor(color);
                 //double val = _minVal + range * (_maxVal - _minVal);
 
-                // Tranform points according to scale of the triangle
+                // Transform points according to scale of the triangle
                 PointF[] pts = new PointF[] { diagram.DiagramTriangle.VertexA, diagram.DiagramTriangle.VertexB, diagram.DiagramTriangle.VertexC };
                 diagram.TransformMatrix.TransformPoints(pts);
-                float tSideLength = pts[2].X - pts[1].X;
+                float tSideLength = pts[2].X - pts[1].X; //Should be the same as diagram.DiagramTriangle.SideLength
 
                 float coefAab = (pts[0].Y - pts[1].Y) / (pts[0].X - pts[1].X);
                 float coefBbcv = py - coefAab * px;
@@ -806,7 +814,7 @@ namespace TernaryDiagramLib
                 float xcv = (ycv - coefBbcv) / coefAab;
 
                 float lenBcv = xcv - pts[1].X;
-                float Cval = lenBcv * 100 / tSideLength;
+                float Cval = diagram.AxisC.Minimum + (lenBcv / tSideLength) * (diagram.AxisC.Maximum - diagram.AxisC.Minimum);
 
                 float coefAca = -coefAab;
                 float coefBca = pts[2].Y - coefAca * pts[2].X;
@@ -814,7 +822,7 @@ namespace TernaryDiagramLib
                 float yav = py;
                 float xav = (py - coefBca) / coefAca;
                 float lenCav = (float)Math.Sqrt(Math.Pow(xav - pts[2].X, 2) + Math.Pow(yav - pts[2].Y, 2));
-                float Aval = lenCav * 100 / tSideLength;
+                float Aval = diagram.AxisA.Minimum + (lenCav / tSideLength) * (diagram.AxisA.Maximum - diagram.AxisA.Minimum);
 
                 float Bval = 100 - Cval - Aval;
                 return new PointT(Aval, Bval, Cval, double.NaN, null);
@@ -865,7 +873,7 @@ namespace TernaryDiagramLib
         }
         #endregion // Methods
 
-        #region Eevents
+        #region Events
         private event PropertyChangedEventHandler _propertyChanged;
         /// <summary>
         /// Occurs when property value of any diagram element changes

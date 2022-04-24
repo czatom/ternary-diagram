@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace TernaryDiagramLib
@@ -13,7 +14,7 @@ namespace TernaryDiagramLib
     {
         internal void Initialize()
         {
-            // Create diagram datatable
+            // Create diagram data table
             _diagramDataTable = new DataTable("Diagram");
             _diagramDataTable.Columns.Add("A", typeof(double));
             _diagramDataTable.Columns.Add("B", typeof(double));
@@ -22,13 +23,14 @@ namespace TernaryDiagramLib
 
             _diagramPoints = new List<PointT>();
 
-            this._axes = new Axis[3];
             this.axisA = new Axis("A");
             this.axisB = new Axis("B");
             this.axisC = new Axis("C");
-            this._axes[0] = this.axisA;
-            this._axes[1] = this.axisB;
-            this._axes[2] = this.axisC;
+            this._axes = new List<Axis>(3) { axisA, axisB, axisC };
+
+            AxisA.PropertyChanged += OnChanged;
+            AxisB.PropertyChanged += OnChanged;
+            AxisC.PropertyChanged += OnChanged;
 
             this._markerSize = 3;
             this._markerType = MarkerType.Triangle;
@@ -41,6 +43,7 @@ namespace TernaryDiagramLib
             this._titleColor = Color.Black;
 
             _valueGradient = new ValueGradient();
+            ValueGradient.PropertyChanged += OnChanged;
         }
 
         /// <summary>
@@ -101,6 +104,72 @@ namespace TernaryDiagramLib
             get { return _diagramPoints; }
         }
 
+        private float _minimumA;
+        /// <summary>
+        /// Gets the minimum value from column A
+        /// </summary>
+        [Category("Data")]
+        [Description("Minimum value of A")]
+        public float MinimumA
+        {
+            get { return _minimumA; }
+        }
+
+        private float _maximumA;
+        /// <summary>
+        /// Gets the maximum value from column A
+        /// </summary>
+        [Category("Data")]
+        [Description("Maximum value of A")]
+        public float MaximumA
+        {
+            get { return _maximumA; }
+        }
+
+        private float _minimumB;
+        /// <summary>
+        /// Gets the minimum value from column B
+        /// </summary>
+        [Category("Data")]
+        [Description("Minimum value of B")]
+        public float MinimumB
+        {
+            get { return _minimumB; }
+        }
+
+        private float _maximumB;
+        /// <summary>
+        /// Gets the maximum value from column B
+        /// </summary>
+        [Category("Data")]
+        [Description("Maximum value of B")]
+        public float MaximumB
+        {
+            get { return _maximumB; }
+        }
+
+        private float _minimumC;
+        /// <summary>
+        /// Gets the minimum value from column C
+        /// </summary>
+        [Category("Data")]
+        [Description("Minimum value of C")]
+        public float MinimumC
+        {
+            get { return _minimumC; }
+        }
+
+        private float _maximumC;
+        /// <summary>
+        /// Gets the maximum value from column A
+        /// </summary>
+        [Category("Data")]
+        [Description("Maximum value of C")]
+        public float MaximumC
+        {
+            get { return _maximumC; }
+        }
+
         private string _name;
         /// <summary>
         /// Name of the diagram area
@@ -120,7 +189,7 @@ namespace TernaryDiagramLib
 
         private Rectangle _workingArea;
         /// <summary>
-        /// Size and absolut coordinates of diagram working area
+        /// Size and coordinates of the upper-left corner of diagram's working area relative to upper-left corner of the control
         /// </summary>
         [Category("Layout")]
         [Description("Working area")]
@@ -183,24 +252,18 @@ namespace TernaryDiagramLib
             }
         }
 
-        private Axis[] _axes;
+        private List<Axis> _axes;
         [Category("Axes")]
         [Description("Collection of diagram axes")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         [Editor(typeof(AxesCollectionEditor), typeof(System.Drawing.Design.UITypeEditor))]
-        [TypeConverter(typeof(AxesArrayConverter))]
-        public Axis[] Axes
+        [TypeConverter(typeof(AxesListConverter))]
+        public IReadOnlyList<Axis> Axes
         {
-            get { return _axes; }
-            set
-            {
-                this.AxisA = value[0];
-                this.AxisB = value[1];
-                this.AxisC = value[2];
-            }
+            get { return _axes.AsReadOnly(); }
         }
 
-        internal Axis axisA;
+        private Axis axisA;
         /// <summary>
         /// Right axis of the ternary diagram
         /// </summary>
@@ -219,7 +282,7 @@ namespace TernaryDiagramLib
             }
         }
 
-        internal Axis axisB;
+        private Axis axisB;
         /// <summary>
         /// Left axis of the ternary diagram
         /// </summary>
@@ -238,7 +301,7 @@ namespace TernaryDiagramLib
             }
         }
 
-        internal Axis axisC;
+        private Axis axisC;
         /// <summary>
         /// Bottom axis of the ternary diagram
         /// </summary>
@@ -255,6 +318,19 @@ namespace TernaryDiagramLib
                 this.axisC = value;
                 this._axes[2] = this.axisC;
             }
+        }
+
+        private bool _autoScale;
+        /// <summary>
+        /// Enables or disables automatic scaling of the axes
+        /// </summary>
+        [Category("Axes")]
+        [Description("Enables or disables automatic scaling of the axes")]
+        [NotifyParentProperty(true)]
+        public bool AutoScale
+        {
+            get { return _autoScale; }
+            set { _autoScale = value; }
         }
 
         private int _markerSize;
@@ -478,6 +554,12 @@ namespace TernaryDiagramLib
         /// <param name="dataColumnD">Source data column D</param>
         public void ValidateAndAddData(DataTable dataTable, DataColumn dataColumnA, DataColumn dataColumnB, DataColumn dataColumnC, DataColumn dataColumnD = null)
         {
+            var minA = 100f;
+            var maxA = 0f;
+            var minB = 100f;
+            var maxB = 0f;
+            var minC = 100f;
+            var maxC = 0f;
             var minVal = double.MaxValue;
             var maxVal = double.MinValue;
 
@@ -492,11 +574,10 @@ namespace TernaryDiagramLib
 
             foreach (DataRow dataRow in dataTable.Rows)
             {
-
                 // For columns A, B and C each value should be between 0-100
-                var valueA = (double)dataRow[dataColumnA];
-                var valueB = (double)dataRow[dataColumnB];
-                var valueC = (double)dataRow[dataColumnC];
+                var valueA = Convert.ToSingle(dataRow[dataColumnA]);
+                var valueB = Convert.ToSingle(dataRow[dataColumnB]);
+                var valueC = Convert.ToSingle(dataRow[dataColumnC]);
 
                 if (valueA < 0 || valueA > 100)
                 {
@@ -527,6 +608,12 @@ namespace TernaryDiagramLib
                     {
                         _diagramDataTable.Rows.Add(new object[] { dataRow[dataColumnA], dataRow[dataColumnB], dataRow[dataColumnC] });
                     }
+                    minA = Math.Min(minA, valueA);
+                    maxA = Math.Max(maxA, valueA);
+                    minB = Math.Min(minB, valueB);
+                    maxB = Math.Max(maxB, valueB);
+                    minC = Math.Min(minC, valueC);
+                    maxC = Math.Max(maxC, valueC);
                 }
                 else
                 {
@@ -536,6 +623,13 @@ namespace TernaryDiagramLib
 
             ValueGradient.Minimum = minVal != double.MaxValue ? minVal : double.NaN;
             ValueGradient.Maximum = maxVal != double.MinValue ? maxVal : double.NaN;
+
+            _minimumA = minA;
+            _maximumA = maxA;
+            _minimumB = minB;
+            _maximumB = maxB;
+            _minimumC = minC;
+            _maximumC = maxC;
         }
 
         public override string ToString()
@@ -551,34 +645,41 @@ namespace TernaryDiagramLib
         private event PropertyChangedEventHandler _propertyChanged;
         public event PropertyChangedEventHandler PropertyChanged
         {
-            add
-            {
-                bool first = _propertyChanged == null;
-                _propertyChanged += value;
-                if (first && _propertyChanged != null)
-                {
-                    AxisA.PropertyChanged += OnChanged;
-                    AxisB.PropertyChanged += OnChanged;
-                    AxisC.PropertyChanged += OnChanged;
-                    ValueGradient.PropertyChanged += OnChanged;
-                }
-            }
-            remove
-            {
-                AxisA.PropertyChanged -= OnChanged;
-                AxisB.PropertyChanged -= OnChanged;
-                AxisC.PropertyChanged -= OnChanged;
-                ValueGradient.PropertyChanged -= OnChanged;
-            }
+            add => _propertyChanged += value;
+            remove => _propertyChanged -= value;
         }
 
         protected void OnChanged(object sender, PropertyChangedEventArgs e)
         {
-            PropertyChangedEventHandler handler = _propertyChanged;
-            if (handler != null)
+            // Recalculate min and max for each axis if one of those values has changed
+            if (sender is Axis && e.PropertyName == "Minimum" || e.PropertyName == "Maximum")
             {
-                handler(this, e);
+                AxisA.PropertyChanged -= OnChanged;
+                AxisB.PropertyChanged -= OnChanged;
+                AxisC.PropertyChanged -= OnChanged;
+
+                var changedAxis = sender as Axis;
+                var axisBefore = Axes[(Axes.ToList().IndexOf(changedAxis) + 2) % Axes.Count];
+                var axisAfter = Axes[(Axes.ToList().IndexOf(changedAxis) + 1) % Axes.Count];
+
+                if (e.PropertyName == "Minimum")
+                {
+                    axisBefore.Maximum = 100 - axisAfter.Minimum - changedAxis.Minimum;
+                    axisAfter.Maximum = 100 - axisBefore.Minimum - changedAxis.Minimum;
+                }
+
+                if (e.PropertyName == "Maximum")
+                {
+                    axisBefore.Minimum = 100 - axisAfter.Minimum - changedAxis.Maximum;
+                    axisAfter.Maximum = 100 - axisBefore.Minimum - changedAxis.Minimum;
+                }
+
+                AxisA.PropertyChanged += OnChanged;
+                AxisB.PropertyChanged += OnChanged;
+                AxisC.PropertyChanged += OnChanged;
             }
+
+            _propertyChanged?.Invoke(this, e);
         }
         #endregion // Events
     }

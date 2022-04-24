@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace TernaryDiagramLib
 {
-    class AxesCollectionEditor : ArrayEditor
+    class AxesCollectionEditor : CollectionEditor
     {
         public AxesCollectionEditor(Type type) : base(typeof(Axis[]))
         {

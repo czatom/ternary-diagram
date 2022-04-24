@@ -128,7 +128,7 @@ namespace TernaryDiagramLib
             int left_to_right = bounds.Width - leftMargin - rightMargin;
             int top_to_bottom = bounds.Height - topMargin - bottomMargin;
 
-            // Check if lenght of triangle side will be determined by width or height of the control
+            // Check if length of triangle side will be determined by width or height of the control
             if (left_to_right > top_to_bottom) _sideLength = top_to_bottom;
             else _sideLength = left_to_right;
 
