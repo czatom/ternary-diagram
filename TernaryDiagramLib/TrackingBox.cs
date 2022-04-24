@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
 
 namespace TernaryDiagramLib
 {
@@ -8,7 +9,7 @@ namespace TernaryDiagramLib
     {
         #region Properties
         private bool _enabled = true;
-        [Category("Bahavior")]
+        [Category("Behavior")]
         [Description("Enable or disable tracking box")]
         [DefaultValue(true)]
         public bool Enabled
@@ -159,6 +160,10 @@ namespace TernaryDiagramLib
             }
         }
         #endregion // Properties
+
+        #region Methods
+
+        #endregion Methods
 
         #region Events
         public event PropertyChangedEventHandler PropertyChanged;

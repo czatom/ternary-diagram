@@ -16,7 +16,8 @@ namespace TernaryDiagramLib
         {
             if (destinationType == typeof(string))
             {
-                return "";
+                var status = (value as TrackingBox).Enabled ? "Enabled" : "Disabled";
+                return status;
             }
 
             return base.ConvertTo(
