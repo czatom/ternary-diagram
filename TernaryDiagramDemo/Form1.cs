@@ -2,6 +2,7 @@
 using System.Data;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using TernaryDiagramLib;
 
@@ -66,9 +67,15 @@ namespace TernaryDiagram
             {
                 for (int i = 0; i < numberOfPoints; i++)
                 {
-                    double valA = ran.NextDouble() * 100;
-                    double valB = ran.NextDouble() * (100 - valA);
-                    double valC = 100 - valA - valB;
+                    double rawValA = ran.NextDouble();
+                    double rawValB = ran.NextDouble();
+                    double rawValC = ran.NextDouble();
+
+                    var rawSum = rawValA + rawValB + rawValC;
+
+                    var valA = rawValA * 100 / rawSum;
+                    var valB = rawValB * 100 / rawSum;
+                    var valC = 100 - valA - valB;
 
                     double valD = 1630 + ran.NextDouble() * 80;
 
@@ -128,6 +135,31 @@ namespace TernaryDiagram
         private void MenuItemExit_Click(object sender, EventArgs e)
         {
             Application.Exit();
+        }
+
+        private void toolStripButtonSingleDiagram_Click(object sender, EventArgs e)
+        {
+            var mainDiagramArea = ternaryDiagram.DiagramAreas[0];
+            ternaryDiagram.DiagramAreas.Clear();
+            ternaryDiagram.DiagramAreas.Add(mainDiagramArea);
+
+            ternaryDiagram.DiagramAreas[0].LoadData(diagramDataSet.SlagData,
+                    diagramDataSet.SlagData.CaO_tColumn,
+                    diagramDataSet.SlagData.FeOn_tColumn,
+                    diagramDataSet.SlagData.SiO2_tColumn,
+                    diagramDataSet.SlagData.SiColumn);
+
+            ternaryDiagram.DiagramAreas[0].Title = "Slag data";
+            ternaryDiagram.DiagramAreas[0].AxisA.Title = "CaO";
+            ternaryDiagram.DiagramAreas[0].AxisB.Title = "FeO";
+            ternaryDiagram.DiagramAreas[0].AxisC.Title = "SiO2";
+            ternaryDiagram.DiagramAreas[0].AxisA.SupportArrow.LabelText = "CaO [%]";
+            ternaryDiagram.DiagramAreas[0].AxisB.SupportArrow.LabelText = "FeO [%]";
+            ternaryDiagram.DiagramAreas[0].AxisC.SupportArrow.LabelText = "SiO2 [%]";
+            ternaryDiagram.DiagramAreas[0].ValueGradient.Title = "Si content in the hot metal [ppm]";
+
+            diagramDataGridView.AutoGenerateColumns = true;
+            bindingSource1.DataMember = "SlagData";
         }
 
         private void toolStripButtonMultipleDiagrams_Click(object sender, EventArgs e)
@@ -217,6 +249,8 @@ namespace TernaryDiagram
                     diagramDataSet.SlagData.P2O5Column);
 
             ternaryDiagram.DiagramAreas.Add(diagramArea4);
+
+            ternaryDiagram.Refresh();
         }
     }
 }
