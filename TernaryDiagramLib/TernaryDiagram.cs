@@ -15,7 +15,7 @@ using System.Windows.Forms;
 namespace TernaryDiagramLib
 {
     [DisplayName("TernaryDiagram")]
-    [ToolboxBitmap(typeof(TernaryDiagram), "ternary.ico")]
+    [ToolboxBitmap(typeof(TernaryDiagram), "ternary")]
     public class TernaryDiagram : Control
     {
         private void Initialize()
@@ -560,8 +560,6 @@ namespace TernaryDiagramLib
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            base.OnMouseMove(e);
-
             if (this._trackingBox.Enabled)
             {
                 PointF pos = this.PointToClient(Cursor.Position);
@@ -573,6 +571,8 @@ namespace TernaryDiagramLib
                 DrawTrackingBox(g);
                 //this.Invalidate();
             }
+
+            base.OnMouseMove(e);
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
@@ -698,10 +698,11 @@ namespace TernaryDiagramLib
         private void DrawTrackingBox(Graphics g)
         {
             TrackingBox box = this._trackingBox;
-            if (box.Enabled && !box.DisplayedPoint.Equals(_currentPoint))
-            {
-                DiagramArea diagram = this._diagramAreas[0];
+            // Diagram area current point belongs to
+            DiagramArea diagram = _currentPoint.DiagramArea;
 
+            if (box.Enabled && diagram != null && !box.DisplayedPoint.Equals(_currentPoint))
+            {
                 g.TextRenderingHint = TextRenderingHint.AntiAlias;
 
                 SizeF labelSize = g.MeasureString("A", box.LabelsFont);
@@ -853,7 +854,7 @@ namespace TernaryDiagramLib
                 float Aval = diagram.AxisA.Minimum + (lenCav / tSideLength) * (diagram.AxisA.Maximum - diagram.AxisA.Minimum);
 
                 float Bval = 100 - Cval - Aval;
-                return new PointT(Aval, Bval, Cval, double.NaN, null);
+                return new PointT(Aval, Bval, Cval, double.NaN, diagram);
             }
             else
             {

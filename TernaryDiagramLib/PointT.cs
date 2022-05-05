@@ -23,10 +23,19 @@ namespace TernaryDiagramLib
         }
 
         #region Variables
-        private readonly DiagramArea _diagram;
         #endregion // Variables
 
         #region Properties
+        private readonly DiagramArea _diagram;
+        /// <summary>
+        /// Gets diagram area this point belongs to
+        /// </summary>
+        public DiagramArea DiagramArea
+        {
+            get { return _diagram; }
+        }
+
+
         /// <summary>
         /// Gets or sets value of A coordinate
         /// </summary>
