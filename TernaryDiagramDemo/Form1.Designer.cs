@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             TernaryDiagramLib.DiagramArea diagramArea1 = new TernaryDiagramLib.DiagramArea();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
             this.menuItem1 = new System.Windows.Forms.MenuItem();
             this.menuItemExit = new System.Windows.Forms.MenuItem();
@@ -39,6 +39,7 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageDiagram = new System.Windows.Forms.TabPage();
+            this.ternaryDiagram1 = new TernaryDiagramLib.TernaryDiagram();
             this.tabPageData = new System.Windows.Forms.TabPage();
             this.diagramDataGridView = new System.Windows.Forms.DataGridView();
             this.aDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -60,7 +61,6 @@
             this.GeneratePointsToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.diagramContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.saveToPNGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ternaryDiagram1 = new TernaryDiagramLib.TernaryDiagram();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -167,6 +167,47 @@
             this.tabPageDiagram.Text = "Diagram";
             this.tabPageDiagram.UseVisualStyleBackColor = true;
             // 
+            // ternaryDiagram1
+            // 
+            diagramArea1.AutoScale = false;
+            diagramArea1.AxisA.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            diagramArea1.AxisA.Maximum = 100F;
+            diagramArea1.AxisA.Minimum = 0F;
+            diagramArea1.AxisA.Name = "A";
+            diagramArea1.AxisA.SupportArrow.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            diagramArea1.AxisA.SupportArrow.LabelText = "A";
+            diagramArea1.AxisA.Title = "A";
+            diagramArea1.AxisA.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            diagramArea1.AxisB.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            diagramArea1.AxisB.Maximum = 100F;
+            diagramArea1.AxisB.Minimum = 0F;
+            diagramArea1.AxisB.Name = "B";
+            diagramArea1.AxisB.SupportArrow.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            diagramArea1.AxisB.SupportArrow.LabelText = "B";
+            diagramArea1.AxisB.Title = "B";
+            diagramArea1.AxisB.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            diagramArea1.AxisC.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            diagramArea1.AxisC.Maximum = 100F;
+            diagramArea1.AxisC.Minimum = 0F;
+            diagramArea1.AxisC.Name = "C";
+            diagramArea1.AxisC.SupportArrow.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            diagramArea1.AxisC.SupportArrow.LabelText = "C";
+            diagramArea1.AxisC.Title = "C";
+            diagramArea1.AxisC.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            diagramArea1.Margin = new System.Windows.Forms.Padding(0);
+            diagramArea1.Name = "DiagramArea1";
+            diagramArea1.SourceDataTable = null;
+            diagramArea1.Title = "";
+            diagramArea1.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            this.ternaryDiagram1.DiagramAreas.Add(diagramArea1);
+            this.ternaryDiagram1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ternaryDiagram1.Location = new System.Drawing.Point(3, 3);
+            this.ternaryDiagram1.Margin = new System.Windows.Forms.Padding(3, 8, 3, 8);
+            this.ternaryDiagram1.Name = "ternaryDiagram1";
+            this.ternaryDiagram1.Size = new System.Drawing.Size(1126, 466);
+            this.ternaryDiagram1.TabIndex = 0;
+            this.ternaryDiagram1.Text = "ternaryDiagram1";
+            // 
             // tabPageData
             // 
             this.tabPageData.Controls.Add(this.diagramDataGridView);
@@ -233,6 +274,7 @@
             this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid1.Location = new System.Drawing.Point(0, 0);
             this.propertyGrid1.Name = "propertyGrid1";
+            this.propertyGrid1.SelectedObject = this.ternaryDiagram1;
             this.propertyGrid1.Size = new System.Drawing.Size(297, 498);
             this.propertyGrid1.TabIndex = 0;
             // 
@@ -342,47 +384,6 @@
             this.saveToPNGToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.saveToPNGToolStripMenuItem.Text = "Save to PNG";
             this.saveToPNGToolStripMenuItem.Click += new System.EventHandler(this.SaveToPNGToolStripMenuItem_Click);
-            // 
-            // ternaryDiagram1
-            // 
-            diagramArea1.AutoScale = false;
-            diagramArea1.AxisA.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            diagramArea1.AxisA.Maximum = 100F;
-            diagramArea1.AxisA.Minimum = 0F;
-            diagramArea1.AxisA.Name = "A";
-            diagramArea1.AxisA.SupportArrow.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            diagramArea1.AxisA.SupportArrow.LabelText = "A";
-            diagramArea1.AxisA.Title = "A";
-            diagramArea1.AxisA.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            diagramArea1.AxisB.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            diagramArea1.AxisB.Maximum = 100F;
-            diagramArea1.AxisB.Minimum = 0F;
-            diagramArea1.AxisB.Name = "B";
-            diagramArea1.AxisB.SupportArrow.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            diagramArea1.AxisB.SupportArrow.LabelText = "B";
-            diagramArea1.AxisB.Title = "B";
-            diagramArea1.AxisB.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            diagramArea1.AxisC.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            diagramArea1.AxisC.Maximum = 100F;
-            diagramArea1.AxisC.Minimum = 0F;
-            diagramArea1.AxisC.Name = "C";
-            diagramArea1.AxisC.SupportArrow.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            diagramArea1.AxisC.SupportArrow.LabelText = "C";
-            diagramArea1.AxisC.Title = "C";
-            diagramArea1.AxisC.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            diagramArea1.Margin = new System.Windows.Forms.Padding(0);
-            diagramArea1.Name = "DiagramArea1";
-            diagramArea1.SourceDataTable = null;
-            diagramArea1.Title = "";
-            diagramArea1.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            this.ternaryDiagram1.DiagramAreas.Add(diagramArea1);
-            this.ternaryDiagram1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ternaryDiagram1.Location = new System.Drawing.Point(3, 3);
-            this.ternaryDiagram1.Margin = new System.Windows.Forms.Padding(3, 8, 3, 8);
-            this.ternaryDiagram1.Name = "ternaryDiagram1";
-            this.ternaryDiagram1.Size = new System.Drawing.Size(1126, 466);
-            this.ternaryDiagram1.TabIndex = 0;
-            this.ternaryDiagram1.Text = "ternaryDiagram1";
             // 
             // Form1
             // 
