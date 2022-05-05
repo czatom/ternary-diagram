@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            TernaryDiagramLib.DiagramArea diagramArea1 = new TernaryDiagramLib.DiagramArea();
             this.mainMenu = new System.Windows.Forms.MainMenu(this.components);
             this.menuItem1 = new System.Windows.Forms.MenuItem();
             this.menuItemExit = new System.Windows.Forms.MenuItem();
@@ -46,6 +47,7 @@
             this.dDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.diagramDataSet = new TernaryDiagram.DiagramDataSet();
+            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.mainToolStrip = new System.Windows.Forms.ToolStrip();
             this.toolStripButton9 = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -59,7 +61,6 @@
             this.diagramContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.saveToPNGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ternaryDiagram1 = new TernaryDiagramLib.TernaryDiagram();
-            this.propertyGrid1 = new System.Windows.Forms.PropertyGrid();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
@@ -106,11 +107,11 @@
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.splitContainer1);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1430, 606);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1441, 498);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Name = "toolStripContainer1";
-            this.toolStripContainer1.Size = new System.Drawing.Size(1430, 653);
+            this.toolStripContainer1.Size = new System.Drawing.Size(1441, 545);
             this.toolStripContainer1.TabIndex = 0;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
@@ -123,7 +124,7 @@
             this.statusStrip.Dock = System.Windows.Forms.DockStyle.None;
             this.statusStrip.Location = new System.Drawing.Point(0, 0);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(1430, 22);
+            this.statusStrip.Size = new System.Drawing.Size(1441, 22);
             this.statusStrip.TabIndex = 0;
             // 
             // splitContainer1
@@ -140,8 +141,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.propertyGrid1);
-            this.splitContainer1.Size = new System.Drawing.Size(1430, 606);
-            this.splitContainer1.SplitterDistance = 1129;
+            this.splitContainer1.Size = new System.Drawing.Size(1441, 498);
+            this.splitContainer1.SplitterDistance = 1140;
             this.splitContainer1.TabIndex = 0;
             // 
             // tabControl1
@@ -152,7 +153,7 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1129, 606);
+            this.tabControl1.Size = new System.Drawing.Size(1140, 498);
             this.tabControl1.TabIndex = 1;
             // 
             // tabPageDiagram
@@ -161,7 +162,7 @@
             this.tabPageDiagram.Location = new System.Drawing.Point(4, 22);
             this.tabPageDiagram.Name = "tabPageDiagram";
             this.tabPageDiagram.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageDiagram.Size = new System.Drawing.Size(1121, 580);
+            this.tabPageDiagram.Size = new System.Drawing.Size(1132, 472);
             this.tabPageDiagram.TabIndex = 0;
             this.tabPageDiagram.Text = "Diagram";
             this.tabPageDiagram.UseVisualStyleBackColor = true;
@@ -172,7 +173,7 @@
             this.tabPageData.Location = new System.Drawing.Point(4, 22);
             this.tabPageData.Name = "tabPageData";
             this.tabPageData.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageData.Size = new System.Drawing.Size(1121, 580);
+            this.tabPageData.Size = new System.Drawing.Size(1132, 472);
             this.tabPageData.TabIndex = 1;
             this.tabPageData.Text = "Data";
             this.tabPageData.UseVisualStyleBackColor = true;
@@ -190,7 +191,7 @@
             this.diagramDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.diagramDataGridView.Location = new System.Drawing.Point(3, 3);
             this.diagramDataGridView.Name = "diagramDataGridView";
-            this.diagramDataGridView.Size = new System.Drawing.Size(1115, 574);
+            this.diagramDataGridView.Size = new System.Drawing.Size(1126, 466);
             this.diagramDataGridView.TabIndex = 0;
             // 
             // aDataGridViewTextBoxColumn
@@ -227,6 +228,14 @@
             this.diagramDataSet.DataSetName = "DiagramDataSet";
             this.diagramDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
             // 
+            // propertyGrid1
+            // 
+            this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.propertyGrid1.Location = new System.Drawing.Point(0, 0);
+            this.propertyGrid1.Name = "propertyGrid1";
+            this.propertyGrid1.Size = new System.Drawing.Size(297, 498);
+            this.propertyGrid1.TabIndex = 0;
+            // 
             // mainToolStrip
             // 
             this.mainToolStrip.Dock = System.Windows.Forms.DockStyle.None;
@@ -243,7 +252,7 @@
             this.GeneratePointsToolStripButton});
             this.mainToolStrip.Location = new System.Drawing.Point(0, 0);
             this.mainToolStrip.Name = "mainToolStrip";
-            this.mainToolStrip.Size = new System.Drawing.Size(1430, 25);
+            this.mainToolStrip.Size = new System.Drawing.Size(1441, 25);
             this.mainToolStrip.Stretch = true;
             this.mainToolStrip.TabIndex = 0;
             // 
@@ -336,28 +345,50 @@
             // 
             // ternaryDiagram1
             // 
+            diagramArea1.AutoScale = false;
+            diagramArea1.AxisA.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            diagramArea1.AxisA.Maximum = 100F;
+            diagramArea1.AxisA.Minimum = 0F;
+            diagramArea1.AxisA.Name = "A";
+            diagramArea1.AxisA.SupportArrow.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            diagramArea1.AxisA.SupportArrow.LabelText = "A";
+            diagramArea1.AxisA.Title = "A";
+            diagramArea1.AxisA.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            diagramArea1.AxisB.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            diagramArea1.AxisB.Maximum = 100F;
+            diagramArea1.AxisB.Minimum = 0F;
+            diagramArea1.AxisB.Name = "B";
+            diagramArea1.AxisB.SupportArrow.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            diagramArea1.AxisB.SupportArrow.LabelText = "B";
+            diagramArea1.AxisB.Title = "B";
+            diagramArea1.AxisB.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            diagramArea1.AxisC.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            diagramArea1.AxisC.Maximum = 100F;
+            diagramArea1.AxisC.Minimum = 0F;
+            diagramArea1.AxisC.Name = "C";
+            diagramArea1.AxisC.SupportArrow.LabelFont = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            diagramArea1.AxisC.SupportArrow.LabelText = "C";
+            diagramArea1.AxisC.Title = "C";
+            diagramArea1.AxisC.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            diagramArea1.Margin = new System.Windows.Forms.Padding(0);
+            diagramArea1.Name = "DiagramArea1";
+            diagramArea1.SourceDataTable = null;
+            diagramArea1.Title = "";
+            diagramArea1.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
+            this.ternaryDiagram1.DiagramAreas.Add(diagramArea1);
             this.ternaryDiagram1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ternaryDiagram1.Location = new System.Drawing.Point(3, 3);
             this.ternaryDiagram1.Margin = new System.Windows.Forms.Padding(3, 8, 3, 8);
             this.ternaryDiagram1.Name = "ternaryDiagram1";
-            this.ternaryDiagram1.Size = new System.Drawing.Size(1115, 574);
+            this.ternaryDiagram1.Size = new System.Drawing.Size(1126, 466);
             this.ternaryDiagram1.TabIndex = 0;
             this.ternaryDiagram1.Text = "ternaryDiagram1";
-            // 
-            // propertyGrid1
-            // 
-            this.propertyGrid1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.propertyGrid1.Location = new System.Drawing.Point(0, 0);
-            this.propertyGrid1.Name = "propertyGrid1";
-            this.propertyGrid1.SelectedObject = this.ternaryDiagram1;
-            this.propertyGrid1.Size = new System.Drawing.Size(297, 606);
-            this.propertyGrid1.TabIndex = 0;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1430, 653);
+            this.ClientSize = new System.Drawing.Size(1441, 545);
             this.Controls.Add(this.toolStripContainer1);
             this.Menu = this.mainMenu;
             this.Name = "Form1";

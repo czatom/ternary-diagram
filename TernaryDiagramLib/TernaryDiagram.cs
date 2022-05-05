@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.Design.Serialization;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Design;
@@ -15,7 +16,8 @@ using System.Windows.Forms;
 namespace TernaryDiagramLib
 {
     [DisplayName("TernaryDiagram")]
-    [ToolboxBitmap(typeof(TernaryDiagram), "ternary")]
+    [ToolboxBitmap(typeof(TernaryDiagram), "ternary.ico")]
+    [Designer(typeof(TernaryDiagramDesigner))]
     public class TernaryDiagram : Control
     {
         private void Initialize()
@@ -38,7 +40,6 @@ namespace TernaryDiagramLib
 
             _diagramAreas = new DiagramAreaCollection();
             _diagramAreas.CollectionChanged += DiagramAreas_CollectionChanged;
-            _diagramAreas.Add(new DiagramArea());
 
             this.Size = new Size(380, 220);
         }
@@ -287,7 +288,6 @@ namespace TernaryDiagramLib
                 orderedDiagramAreas.Remove(selectedDiagram);
                 orderedDiagramAreas.Add(selectedDiagram);
             }
-
 
             foreach (var diagram in orderedDiagramAreas)
             {

@@ -50,7 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Arrow.cs" />
-    <Compile Include="AxesArrayConverter.cs" />
+    <Compile Include="Converters\AxesArrayConverter.cs" />
     <Compile Include="AxesCollectionEditor.cs" />
     <Compile Include="Axis.cs" />
     <Compile Include="DiagramArea.cs" />
@@ -64,8 +64,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="TrackingBoxConverter.cs" />
-    <Compile Include="TriangleConverter.cs" />
+    <Compile Include="Converters\TrackingBoxConverter.cs" />
+    <Compile Include="Converters\TriangleConverter.cs" />
+    <Compile Include="TernaryDiagramDesigner.cs" />
     <Compile Include="ValueGradient.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="PointT.cs" />
@@ -76,7 +77,7 @@
     <Compile Include="TPointComparer.cs" />
     <Compile Include="TrackingBox.cs" />
     <Compile Include="Triangle.cs" />
-    <Compile Include="ValueGradientConverter.cs" />
+    <Compile Include="Converters\ValueGradientConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ternary.ico" />
