@@ -276,7 +276,20 @@ namespace TernaryDiagramLib
             // Get the position and size for each DiagramArea
             CalculateAreasInnerPositionsAndSizes(e.ClipRectangle);
 
-            foreach (var diagram in _diagramAreas)
+            // Shallow copy for reordering
+            var orderedDiagramAreas = new List<DiagramArea>(_diagramAreas);
+            // Get diagram which is currently pointed with the mouse cursor
+            var selectedDiagram = _currentPoint.DiagramArea;
+            // If the selected diagram is not null, then we want to print it as the last diagram,
+            // so that it can be displayed on top of other diagrams when zoomed in 
+            if (selectedDiagram != null && _diagramAreas.Last() != selectedDiagram)
+            {
+                orderedDiagramAreas.Remove(selectedDiagram);
+                orderedDiagramAreas.Add(selectedDiagram);
+            }
+
+
+            foreach (var diagram in orderedDiagramAreas)
             {
                 Rectangle bounds = diagram.WorkingArea;
                 Graphics g = e.Graphics;
