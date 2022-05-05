@@ -8,8 +8,9 @@ using System.Linq;
 namespace TernaryDiagramLib
 {
     /// <summary>
-    /// Class reresenting ternary diagram value gradient 
+    /// Class representing ternary diagram value gradient 
     /// </summary>
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public class ValueGradient : DiagramElement
     {
         internal void Initialize()
@@ -19,7 +20,7 @@ namespace TernaryDiagramLib
             _location = new Point();
             _font = new System.Drawing.Font(FontFamily.GenericSansSerif, 10, FontStyle.Regular);
             _foreColor = Color.Black;
-            _exclusiveColors = new List<int>();
+            _ignoredColors = new List<int>();
             _titleColor = Color.Black;
             _title = "";
             _titleFont = new System.Drawing.Font(FontFamily.GenericSansSerif, 10, FontStyle.Regular);
@@ -202,18 +203,18 @@ namespace TernaryDiagramLib
             }
         }
 
-        private List<int> _exclusiveColors;
+        private List<int> _ignoredColors;
         /// <summary>
         /// Colors excluded from method GetValueByColor
-        /// Notice: not good enought since control is using antialiasing and there will be a lot of different shades of base colors,
-        /// because edges are "blured" therefore each point is not accually represented by one solid color 
+        /// Notice: not good enough since control is using anti-aliasing and there will be a lot of different shades of base colors,
+        /// because edges are "blurred" therefore each point is not actually represented by one solid color 
         /// </summary>
-        public List<int> ExclusiveColors
+        public List<int> IgnoredColors
         {
-            get { return _exclusiveColors; }
+            get { return _ignoredColors; }
             set
             {
-                _exclusiveColors = value;
+                _ignoredColors = value;
                 OnChanged(this, new PropertyChangedEventArgs("ExclusiveColors"));
             }
         }
@@ -221,11 +222,50 @@ namespace TernaryDiagramLib
 
         #region Methods
         /// <summary>
-        /// Inputs a (value) between 0 and 1 and outputs color representing that position in the gradient.
+        /// Gets the corresponding color from the gradient for a specific diagram value
         /// </summary>
-        /// <param name="value">Gradient value</param>
-        /// <returns>Color at specified value of gradient</returns>
-        public Color GetColorAtValue(float value)
+        /// <param name="value">Diagram value from ternary point</param>
+        /// <returns>Color for a specific diagram value</returns>
+        public Color GetColorForDiagramValue(double value)
+        {
+            int red = 0;
+            int green = 0;
+            int blue = 0;
+
+            // Change it to value between 0 and 1
+            double percV = (value - Minimum) / (Maximum - Minimum);
+
+            if (_colorMap.ColorPoints.Count > 0)
+            {
+                red = _colorMap.ColorPoints.Last().R;
+                green = _colorMap.ColorPoints.Last().G;
+                blue = _colorMap.ColorPoints.Last().B;
+
+                for (int i = 0; i < _colorMap.ColorPoints.Count; i++)
+                {
+                    ColorPoint currColor = _colorMap.ColorPoints[i];
+                    if (percV < currColor.Value)
+                    {
+                        ColorPoint prevColor = _colorMap.ColorPoints[Math.Max(0, i - 1)];
+                        double valueDiff = (prevColor.Value - currColor.Value);
+                        double fractBetween = (valueDiff == 0) ? 0 : (percV - currColor.Value) / valueDiff;
+                        red = (int)(Math.Round((prevColor.R - currColor.R) * fractBetween) + currColor.R);
+                        green = (int)(Math.Round((prevColor.G - currColor.G) * fractBetween) + currColor.G);
+                        blue = (int)(Math.Round((prevColor.B - currColor.B) * fractBetween) + currColor.B);
+                        break;
+                    }
+                }
+            }
+
+            return Color.FromArgb(255, red, green, blue);
+        }
+
+        /// <summary>
+        /// Gets color for gradient value. Gradient values are between 0 and 1.
+        /// </summary>
+        /// <param name="value">Gradient value between 0 and 1, representing position in the gradient</param>
+        /// <returns>Color for specified gradient value</returns>
+        private Color GetColorAtGradientValue(float value)
         {
             int red = 0;
             int green = 0;
@@ -264,7 +304,7 @@ namespace TernaryDiagramLib
         /// <returns>Gradient value (0-1)</returns>
         public double GetValueByColor(Color color)
         {
-            if (!_exclusiveColors.Contains(color.ToArgb()))
+            if (!_ignoredColors.Contains(color.ToArgb()))
             {
                 if (_colorMap.Colors.Contains(color))
                 {
@@ -434,7 +474,7 @@ namespace TernaryDiagramLib
 
             for (int y = 0; y < bmp.Height; y++)
             {
-                Color color = GetColorAtValue(1 - (float)y / h);
+                Color color = GetColorAtGradientValue(1 - (float)y / h);
                 for (int x = 0; x < bmp.Width; x++)
                 {
                     bmp.SetPixel(x, y, color);

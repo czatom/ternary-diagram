@@ -15,8 +15,6 @@ namespace TernaryDiagram
             InitializeComponent();
         }
 
-        private DataTable dataTable = new DataTable();
-
         private void Form1_Load(object sender, EventArgs e)
         {
             diagramDataGridView.AutoGenerateColumns = true;
@@ -82,19 +80,19 @@ namespace TernaryDiagram
                     diagramDataSet.RandomData.AddRandomDataRow(valA, valB, valC, valD);
                 }
 
-                ternaryDiagram.DiagramAreas[0].LoadData(diagramDataSet.RandomData,
+                ternaryDiagram1.DiagramAreas[0].LoadData(diagramDataSet.RandomData,
                     diagramDataSet.RandomData.AColumn,
                     diagramDataSet.RandomData.BColumn,
                     diagramDataSet.RandomData.CColumn,
                     diagramDataSet.RandomData.DColumn);
 
-                ternaryDiagram.DiagramAreas[0].Title = "Random data";
-                ternaryDiagram.DiagramAreas[0].AxisA.Title = "A";
-                ternaryDiagram.DiagramAreas[0].AxisB.Title = "B";
-                ternaryDiagram.DiagramAreas[0].AxisC.Title = "C";
-                ternaryDiagram.DiagramAreas[0].AxisA.SupportArrow.LabelText = "% A";
-                ternaryDiagram.DiagramAreas[0].AxisB.SupportArrow.LabelText = "% B";
-                ternaryDiagram.DiagramAreas[0].AxisC.SupportArrow.LabelText = "% C";
+                ternaryDiagram1.DiagramAreas[0].Title = "Random data";
+                ternaryDiagram1.DiagramAreas[0].AxisA.Title = "A";
+                ternaryDiagram1.DiagramAreas[0].AxisB.Title = "B";
+                ternaryDiagram1.DiagramAreas[0].AxisC.Title = "C";
+                ternaryDiagram1.DiagramAreas[0].AxisA.SupportArrow.LabelText = "% A";
+                ternaryDiagram1.DiagramAreas[0].AxisB.SupportArrow.LabelText = "% B";
+                ternaryDiagram1.DiagramAreas[0].AxisC.SupportArrow.LabelText = "% C";
 
                 bindingSource1.DataMember = "RandomData";
             }
@@ -102,31 +100,31 @@ namespace TernaryDiagram
 
         private void RefreshToolStripButton_Click(object sender, EventArgs e)
         {
-            ternaryDiagram.Refresh();
+            ternaryDiagram1.Refresh();
         }
 
         private void SaveToPNGToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Bitmap bmp = ternaryDiagram.ToBitmap(1920, 1600);
+            Bitmap bmp = ternaryDiagram1.ToBitmap(1920, 1600);
             bmp.Save("test.png", System.Drawing.Imaging.ImageFormat.Png);
         }
 
         private void LoadSlagDataToolStripButton_Click(object sender, EventArgs e)
         {
-            ternaryDiagram.DiagramAreas[0].LoadData(diagramDataSet.SlagData,
+            ternaryDiagram1.DiagramAreas[0].LoadData(diagramDataSet.SlagData,
                                 diagramDataSet.SlagData.CaO_tColumn,
                                 diagramDataSet.SlagData.FeOn_tColumn,
                                 diagramDataSet.SlagData.SiO2_tColumn, 
                                 diagramDataSet.SlagData.SiColumn);
 
-            ternaryDiagram.DiagramAreas[0].Title = "Slag data";
-            ternaryDiagram.DiagramAreas[0].AxisA.Title = "CaO";
-            ternaryDiagram.DiagramAreas[0].AxisB.Title = "FeO";
-            ternaryDiagram.DiagramAreas[0].AxisC.Title = "SiO2";
-            ternaryDiagram.DiagramAreas[0].AxisA.SupportArrow.LabelText = "CaO [%]";
-            ternaryDiagram.DiagramAreas[0].AxisB.SupportArrow.LabelText = "FeO [%]";
-            ternaryDiagram.DiagramAreas[0].AxisC.SupportArrow.LabelText = "SiO2 [%]";
-            ternaryDiagram.DiagramAreas[0].ValueGradient.Title = "Si content in the hot metal [ppm]";
+            ternaryDiagram1.DiagramAreas[0].Title = "Slag data";
+            ternaryDiagram1.DiagramAreas[0].AxisA.Title = "CaO";
+            ternaryDiagram1.DiagramAreas[0].AxisB.Title = "FeO";
+            ternaryDiagram1.DiagramAreas[0].AxisC.Title = "SiO2";
+            ternaryDiagram1.DiagramAreas[0].AxisA.SupportArrow.LabelText = "CaO [%]";
+            ternaryDiagram1.DiagramAreas[0].AxisB.SupportArrow.LabelText = "FeO [%]";
+            ternaryDiagram1.DiagramAreas[0].AxisC.SupportArrow.LabelText = "SiO2 [%]";
+            ternaryDiagram1.DiagramAreas[0].ValueGradient.Title = "Si content in the hot metal [ppm]";
 
             diagramDataGridView.AutoGenerateColumns = true;
             bindingSource1.DataMember = "SlagData";
@@ -139,24 +137,24 @@ namespace TernaryDiagram
 
         private void toolStripButtonSingleDiagram_Click(object sender, EventArgs e)
         {
-            var mainDiagramArea = ternaryDiagram.DiagramAreas[0];
-            ternaryDiagram.DiagramAreas.Clear();
-            ternaryDiagram.DiagramAreas.Add(mainDiagramArea);
+            var mainDiagramArea = ternaryDiagram1.DiagramAreas[0];
+            ternaryDiagram1.DiagramAreas.Clear();
+            ternaryDiagram1.DiagramAreas.Add(mainDiagramArea);
 
-            ternaryDiagram.DiagramAreas[0].LoadData(diagramDataSet.SlagData,
+            ternaryDiagram1.DiagramAreas[0].LoadData(diagramDataSet.SlagData,
                     diagramDataSet.SlagData.CaO_tColumn,
                     diagramDataSet.SlagData.FeOn_tColumn,
-                    diagramDataSet.SlagData.SiO2_tColumn,
-                    diagramDataSet.SlagData.SiColumn);
+                    diagramDataSet.SlagData.SiO2_tColumn);
+                    //diagramDataSet.SlagData.SiColumn);
 
-            ternaryDiagram.DiagramAreas[0].Title = "Slag data";
-            ternaryDiagram.DiagramAreas[0].AxisA.Title = "CaO";
-            ternaryDiagram.DiagramAreas[0].AxisB.Title = "FeO";
-            ternaryDiagram.DiagramAreas[0].AxisC.Title = "SiO2";
-            ternaryDiagram.DiagramAreas[0].AxisA.SupportArrow.LabelText = "CaO [%]";
-            ternaryDiagram.DiagramAreas[0].AxisB.SupportArrow.LabelText = "FeO [%]";
-            ternaryDiagram.DiagramAreas[0].AxisC.SupportArrow.LabelText = "SiO2 [%]";
-            ternaryDiagram.DiagramAreas[0].ValueGradient.Title = "Si content in the hot metal [ppm]";
+            ternaryDiagram1.DiagramAreas[0].Title = "Slag data";
+            ternaryDiagram1.DiagramAreas[0].AxisA.Title = "CaO";
+            ternaryDiagram1.DiagramAreas[0].AxisB.Title = "FeO";
+            ternaryDiagram1.DiagramAreas[0].AxisC.Title = "SiO2";
+            ternaryDiagram1.DiagramAreas[0].AxisA.SupportArrow.LabelText = "CaO [%]";
+            ternaryDiagram1.DiagramAreas[0].AxisB.SupportArrow.LabelText = "FeO [%]";
+            ternaryDiagram1.DiagramAreas[0].AxisC.SupportArrow.LabelText = "SiO2 [%]";
+            ternaryDiagram1.DiagramAreas[0].ValueGradient.Title = "Si content in the hot metal [ppm]";
 
             diagramDataGridView.AutoGenerateColumns = true;
             bindingSource1.DataMember = "SlagData";
@@ -164,9 +162,9 @@ namespace TernaryDiagram
 
         private void toolStripButtonMultipleDiagrams_Click(object sender, EventArgs e)
         {
-            ternaryDiagram.DiagramAreas.Clear();
+            ternaryDiagram1.DiagramAreas.Clear();
             
-            // Fist
+            // First
             var diagramArea1 = new DiagramArea()
             {
                 Title = "Slag data vs Si content",
@@ -185,7 +183,7 @@ namespace TernaryDiagram
                     diagramDataSet.SlagData.SiO2_tColumn,
                     diagramDataSet.SlagData.SiColumn);
 
-            ternaryDiagram.DiagramAreas.Add(diagramArea1);
+            ternaryDiagram1.DiagramAreas.Add(diagramArea1);
 
             // Second
             var diagramArea2 = new DiagramArea()
@@ -206,7 +204,7 @@ namespace TernaryDiagram
                     diagramDataSet.SlagData.SiO2_tColumn,
                     diagramDataSet.SlagData.Al2O3Column);
 
-            ternaryDiagram.DiagramAreas.Add(diagramArea2);
+            ternaryDiagram1.DiagramAreas.Add(diagramArea2);
 
             // Third
             var diagramArea3 = new DiagramArea()
@@ -227,7 +225,7 @@ namespace TernaryDiagram
                     diagramDataSet.SlagData.SiO2_tColumn,
                     diagramDataSet.SlagData.MgOColumn);
 
-            ternaryDiagram.DiagramAreas.Add(diagramArea3);
+            ternaryDiagram1.DiagramAreas.Add(diagramArea3);
 
             // Fourth
             var diagramArea4 = new DiagramArea()
@@ -248,9 +246,9 @@ namespace TernaryDiagram
                     diagramDataSet.SlagData.SiO2_tColumn,
                     diagramDataSet.SlagData.P2O5Column);
 
-            ternaryDiagram.DiagramAreas.Add(diagramArea4);
+            ternaryDiagram1.DiagramAreas.Add(diagramArea4);
 
-            ternaryDiagram.Refresh();
+            ternaryDiagram1.Refresh();
         }
     }
 }

@@ -57,14 +57,15 @@
     <Compile Include="DiagramAreaCollection.cs" />
     <Compile Include="DiagramElement.cs" />
     <Compile Include="Enums.cs" />
-    <Compile Include="IDiagramElement.cs" />
-    <Compile Include="List.cs" />
+    <Compile Include="Contracts\IDiagramElement.cs" />
+    <Compile Include="Contracts\IDiagramNamedElement.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="TrackingBoxConverter.cs" />
+    <Compile Include="TriangleConverter.cs" />
     <Compile Include="ValueGradient.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="PointT.cs" />

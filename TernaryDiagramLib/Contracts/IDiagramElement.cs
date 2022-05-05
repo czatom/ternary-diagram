@@ -1,7 +1,7 @@
 ﻿
 namespace TernaryDiagramLib
 {
-    internal interface IDiagramElement
+    public interface IDiagramElement
     {
         void Invalidate();
 

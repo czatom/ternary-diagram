@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
@@ -36,6 +38,7 @@ namespace TernaryDiagramLib
 
             _diagramAreas = new DiagramAreaCollection();
             _diagramAreas.CollectionChanged += DiagramAreas_CollectionChanged;
+            _diagramAreas.Add(new DiagramArea());
 
             this.Size = new Size(380, 220);
         }
@@ -62,7 +65,7 @@ namespace TernaryDiagramLib
             // Get first diagram area
             var diagramArea = _diagramAreas[0];
             diagramArea.SourceDataTable = dataTable;
-            diagramArea.ValidateAndAddData(dataTable, dataColumnA, dataColumnB, dataColumnC);
+            diagramArea.ValidateAndAddNewData(dataTable, dataColumnA, dataColumnB, dataColumnC);
         }
 
         /// <summary>
@@ -80,7 +83,7 @@ namespace TernaryDiagramLib
             // Get first diagram area
             var diagramArea = _diagramAreas[0];
             diagramArea.SourceDataTable = dataTable;
-            diagramArea.ValidateAndAddData(dataTable, dataColumnA, dataColumnB, dataColumnC, dataColumnD);
+            diagramArea.ValidateAndAddNewData(dataTable, dataColumnA, dataColumnB, dataColumnC, dataColumnD);
         }
 
         [DllImport("user32.dll")]
@@ -89,10 +92,9 @@ namespace TernaryDiagramLib
         [DllImport("gdi32.dll", CharSet = CharSet.Auto, SetLastError = true, ExactSpelling = true)]
         static extern int BitBlt(IntPtr hDC, int x, int y, int nWidth, int nHeight, IntPtr hSrcDC, int xSrc, int ySrc, int dwRop);
 
-        private DiagramAreaCollection _diagramAreas;
-
         #region Variables
-        // Box with coordinates
+        // Collection of diagram areas
+        private DiagramAreaCollection _diagramAreas;
 
         // Point on the screen with mouse cursor on it
         private PointT _currentPoint;
@@ -495,11 +497,47 @@ namespace TernaryDiagramLib
 
         private void DiagramAreas_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            foreach (DiagramArea area in _diagramAreas)
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            {
+                // Give unique name to every new area with empty Name property
+                foreach (var area in e.NewItems.Cast<DiagramArea>())
+                {
+                    if (string.IsNullOrEmpty(area.Name))
+                    {
+                        area.Name = GetUniqueName(_diagramAreas);
+                    }
+                }
+            }
+
+            // Subscribe to the event
+            foreach (var area in _diagramAreas)
             {
                 area.PropertyChanged -= Area_PropertyChanged;
                 area.PropertyChanged += Area_PropertyChanged;
             }
+        }
+
+        /// <summary>
+        /// Gets unique name, that is not set for another named object in the collection
+        /// </summary>
+        /// <param name="collection">The collection with named objects</param>
+        /// <returns>Returns unique name or empty string if name couldn't be found</returns>
+        private string GetUniqueName<T>(IEnumerable<T> collection) where T : IDiagramNamedElement
+        {
+            var uniqueName = "";
+            if (collection != null)
+            {
+                var baseName = typeof(T).Name;
+                for (int suffix = 1; suffix < Int32.MaxValue; suffix++)
+                {
+                    uniqueName = $"{baseName}{suffix}";
+                    if (!collection.Any(el => el.Name == uniqueName))
+                    {
+                        break;
+                    }
+                }
+            }
+            return uniqueName;
         }
 
         private void TernaryDiagram_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -623,43 +661,33 @@ namespace TernaryDiagramLib
 
         private void DrawPoints(Graphics g, DiagramArea diagram)
         {
-            if (diagram.DiagramDataTable != null && diagram.DiagramDataTable.Rows.Count > 0)
+            if (diagram.DiagramPoints.Any())
             {
                 var valueGradient = diagram.ValueGradient;
 
-                foreach (DataRow dataRow in diagram.DiagramDataTable.Rows)
+                foreach (var point in diagram.DiagramPoints)
                 {
-                    // Calculating real coordinates (control coordinates)
-                    float percA = (float)(double)dataRow[0];
-                    float percB = (float)(double)dataRow[1];
-                    float percC = (float)(double)dataRow[2];
+                    Color pointColor = diagram.MarkerDefaultColor;
+                    if (valueGradient.Enabled && !Double.IsNaN(point.Value))
+                    {
+                        pointColor = valueGradient.GetColorForDiagramValue(point.Value);
+                    }
 
-                    // If value is not given use max 
-                    //TODO: try something else
-                    double value = dataRow[3] != System.DBNull.Value ? (double)dataRow[3] : valueGradient.Maximum;
-
-                    PointT abc = new PointT(percA, percB, percC, value, diagram);
-                    diagram.DiagramPoints.Add(abc);
-
-                    
-                    double percV = (value - valueGradient.Minimum) / (valueGradient.Maximum - valueGradient.Minimum);
-                    Color pointColor = valueGradient.GetColorAtValue((float)percV);
-                    
                     // Draw point
                     switch (diagram.MarkerType)
                     {
                         case MarkerType.Circle:
-                            g.FillEllipse(new SolidBrush(pointColor), abc.MarkerRect);
+                            g.FillEllipse(new SolidBrush(pointColor), point.MarkerRect);
                             break;
                         case MarkerType.Square:
-                            g.FillRectangle(new SolidBrush(pointColor), abc.MarkerRect);
+                            g.FillRectangle(new SolidBrush(pointColor), point.MarkerRect);
                             break;
                         case MarkerType.Triangle:
                             g.FillPolygon(new SolidBrush(pointColor), new PointF[]
                             {
-                                new PointF(abc.MarkerRect.Left, abc.MarkerRect.Top),
-                                new PointF(abc.MarkerRect.Right, abc.MarkerRect.Top),
-                                new PointF(abc.MarkerRect.Left + abc.MarkerRect.Width/2, abc.MarkerRect.Bottom)
+                                new PointF(point.MarkerRect.Left, point.MarkerRect.Top),
+                                new PointF(point.MarkerRect.Right, point.MarkerRect.Top),
+                                new PointF(point.MarkerRect.Left + point.MarkerRect.Width/2, point.MarkerRect.Bottom)
                             });
                             break;
                     }

@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace TernaryDiagramLib
 {
-    public class Axis : DiagramElement, INotifyPropertyChanged
+    public class Axis : DiagramElement, INotifyPropertyChanged, IDiagramNamedElement
     {
         internal void Initialize(string axis_name="")
         {
@@ -41,7 +41,7 @@ namespace TernaryDiagramLib
         /// <param name="axis_name">Name of the axis</param>
         public Axis(string axis_name)
         {
-            this.Initialize();
+            this.Initialize(axis_name);
         }
 
         #region Properties

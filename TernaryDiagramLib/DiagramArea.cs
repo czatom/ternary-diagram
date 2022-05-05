@@ -10,7 +10,7 @@ using System.Windows.Forms;
 namespace TernaryDiagramLib
 {
     [DefaultProperty("Axes")]
-    public class DiagramArea : DiagramElement
+    public class DiagramArea : DiagramElement, IDiagramNamedElement
     {
         internal void Initialize()
         {
@@ -34,6 +34,7 @@ namespace TernaryDiagramLib
 
             this._markerSize = 3;
             this._markerType = MarkerType.Triangle;
+            this._markerDefaultColor = Color.Black;
             this._backColor1 = Color.White;
             this._backColor2 = Color.Transparent;
             this._gradType = GradType.Vertical;
@@ -177,6 +178,7 @@ namespace TernaryDiagramLib
         [Category("Design")]
         [Description("Name of the area")]
         [NotifyParentProperty(true)]
+        [DefaultValue("")]
         public string Name
         {
             get { return _name; }
@@ -369,6 +371,24 @@ namespace TernaryDiagramLib
             }
         }
 
+        private Color _markerDefaultColor;
+        /// <summary>
+        /// Default color of marker. Used in case value gradient is disabled or there is not value data.
+        /// </summary>
+        [Category("Points")]
+        [Description("Default color of marker. Used in case value gradient is disabled or there is not value data.")]
+        [DefaultValue(typeof(Color), "Black")]
+        [NotifyParentProperty(true)]
+        public Color MarkerDefaultColor
+        {
+            get { return _markerDefaultColor; }
+            set
+            {
+                _markerDefaultColor = value;
+                OnChanged(this, new PropertyChangedEventArgs("MarkerType"));
+            }
+        }
+
         private Matrix _transformMatrix = new Matrix();
         /// <summary>
         /// Transformation matrix used for zooming
@@ -454,6 +474,8 @@ namespace TernaryDiagramLib
         private Triangle _diagramTriangle;
         [Category("Diagram")]
         [Description("Gets diagram triangle")]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [TypeConverter(typeof(TriangleConverter))]
         public Triangle DiagramTriangle
         {
             get { return _diagramTriangle; }
@@ -526,7 +548,7 @@ namespace TernaryDiagramLib
             set
             {
                 _valueGradient = value;
-                _valueGradient.ExclusiveColors.Clear();
+                _valueGradient.IgnoredColors.Clear();
                 //_gradient.ExclusiveColors.AddRange(new int[] { _ab_to_bc_LineColor.ToArgb(), _bc_to_ca_LineColor.ToArgb(), _ca_to_ab_LineColor.ToArgb(), _triangleBorderColor.ToArgb(), _triangleBackgroundColor.ToArgb() });
             }
         }
@@ -536,7 +558,7 @@ namespace TernaryDiagramLib
         public void LoadData(DataTable dataTable, DataColumn dataColumnA, DataColumn dataColumnB, DataColumn dataColumnC, DataColumn dataColumnD = null)
         {
             _sourceDataTable = dataTable;
-            ValidateAndAddData(dataTable, dataColumnA, dataColumnB, dataColumnC, dataColumnD);
+            ValidateAndAddNewData(dataTable, dataColumnA, dataColumnB, dataColumnC, dataColumnD);
         }
 
         private bool IsOfNumericType(DataColumn column)
@@ -545,14 +567,14 @@ namespace TernaryDiagramLib
         }
 
         /// <summary>
-        /// Adds to diagram data table correct records
+        /// Adds to diagram data table correct records and creates list of ternary points
         /// </summary>
         /// <param name="dataTable">Source data table</param>
         /// <param name="dataColumnA">Source data column A</param>
         /// <param name="dataColumnB">Source data column B</param>
         /// <param name="dataColumnC">Source data column C</param>
         /// <param name="dataColumnD">Source data column D</param>
-        public void ValidateAndAddData(DataTable dataTable, DataColumn dataColumnA, DataColumn dataColumnB, DataColumn dataColumnC, DataColumn dataColumnD = null)
+        public void ValidateAndAddNewData(DataTable dataTable, DataColumn dataColumnA, DataColumn dataColumnB, DataColumn dataColumnC, DataColumn dataColumnD = null)
         {
             var minA = 100f;
             var maxA = 0f;
@@ -565,6 +587,7 @@ namespace TernaryDiagramLib
 
             // Clear old data
             _diagramDataTable.Clear();
+            DiagramPoints.Clear();
 
             // Check if columns are of numeric type
             if (!IsOfNumericType(dataColumnA)) throw new ArgumentException($"Data from column {dataColumnA.ColumnName} is not of numeric type");
@@ -575,49 +598,55 @@ namespace TernaryDiagramLib
             foreach (DataRow dataRow in dataTable.Rows)
             {
                 // For columns A, B and C each value should be between 0-100
-                var valueA = Convert.ToSingle(dataRow[dataColumnA]);
-                var valueB = Convert.ToSingle(dataRow[dataColumnB]);
-                var valueC = Convert.ToSingle(dataRow[dataColumnC]);
+                var coordinateA = Convert.ToSingle(dataRow[dataColumnA]);
+                var coordinateB = Convert.ToSingle(dataRow[dataColumnB]);
+                var coordinateC = Convert.ToSingle(dataRow[dataColumnC]);
 
-                if (valueA < 0 || valueA > 100)
+                if (coordinateA < 0 || coordinateA > 100)
                 {
-                    throw new ArgumentException($"Incorrect value {valueA} in column {dataColumnA.ColumnName} and row {dataTable.Rows.IndexOf(dataRow)}. Value should be between 0-100.");
+                    throw new ArgumentException($"Incorrect value {coordinateA} in column {dataColumnA.ColumnName} and row {dataTable.Rows.IndexOf(dataRow)}. Value should be between 0-100.");
                 }
 
-                if (valueB < 0 || valueB > 100)
+                if (coordinateB < 0 || coordinateB > 100)
                 {
-                    throw new ArgumentException($"Incorrect value {valueB} in column {dataColumnB.ColumnName} and row {dataTable.Rows.IndexOf(dataRow)}. Value should be between 0-100");
+                    throw new ArgumentException($"Incorrect value {coordinateB} in column {dataColumnB.ColumnName} and row {dataTable.Rows.IndexOf(dataRow)}. Value should be between 0-100");
                 }
 
-                if (valueC < 0 || valueC > 100)
+                if (coordinateC < 0 || coordinateC > 100)
                 {
-                    throw new ArgumentException($"Incorrect value {valueC} in column {dataColumnC.ColumnName} and row {dataTable.Rows.IndexOf(dataRow)}. Value should be between 0-100");
+                    throw new ArgumentException($"Incorrect value {coordinateC} in column {dataColumnC.ColumnName} and row {dataTable.Rows.IndexOf(dataRow)}. Value should be between 0-100");
                 }
 
                 // Sum of values from columns A, B and C should be equal 100 with some tolerance
-                double total = valueA + valueB + valueC;
+                double total = coordinateA + coordinateB + coordinateC;
                 if (Math.Abs(100 - total) < 0.001)
                 {
+                    double value = double.NaN;
+
                     if (dataColumnD != null)
                     {
-                        _diagramDataTable.Rows.Add(new object[] { dataRow[dataColumnA], dataRow[dataColumnB], dataRow[dataColumnC], dataRow[dataColumnD] });
-                        minVal = Math.Min(minVal, (double)dataRow[dataColumnD]);
-                        maxVal = Math.Max(maxVal, (double)dataRow[dataColumnD]);
+                        value = Convert.ToDouble(dataRow[dataColumnD.ColumnName]);
+                        minVal = Math.Min(minVal, value);
+                        maxVal = Math.Max(maxVal, value);
                     }
-                    else
-                    {
-                        _diagramDataTable.Rows.Add(new object[] { dataRow[dataColumnA], dataRow[dataColumnB], dataRow[dataColumnC] });
-                    }
-                    minA = Math.Min(minA, valueA);
-                    maxA = Math.Max(maxA, valueA);
-                    minB = Math.Min(minB, valueB);
-                    maxB = Math.Max(maxB, valueB);
-                    minC = Math.Min(minC, valueC);
-                    maxC = Math.Max(maxC, valueC);
+
+                    minA = Math.Min(minA, coordinateA);
+                    maxA = Math.Max(maxA, coordinateA);
+                    minB = Math.Min(minB, coordinateB);
+                    maxB = Math.Max(maxB, coordinateB);
+                    minC = Math.Min(minC, coordinateC);
+                    maxC = Math.Max(maxC, coordinateC);
+
+                    // Finally add correct data row to the internal data table
+                    _diagramDataTable.Rows.Add(new object[] { coordinateA, coordinateB, coordinateC, value });
+
+                    // Create new ternary point and add it to the list
+                    PointT abc = new PointT(coordinateA, coordinateB, coordinateC, value, this);
+                    DiagramPoints.Add(abc);
                 }
                 else
                 {
-                    throw new ArgumentException($"Incorrect sum of values {valueA}, {valueB} and {valueC} in row {dataTable.Rows.IndexOf(dataRow)}. The sum is {total}, but should be 100.");
+                    throw new ArgumentException($"Incorrect sum of values {coordinateA}, {coordinateB} and {coordinateC} in row {dataTable.Rows.IndexOf(dataRow)}. The sum is {total}, but should be 100.");
                 }
             }
 

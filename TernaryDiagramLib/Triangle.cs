@@ -115,10 +115,10 @@ namespace TernaryDiagramLib
         /// Calculates parameters of the diagram triangle
         /// </summary>
         /// <param name="bounds">Diagram bounds</param>
-        /// <param name="topMargin">Miminum margin from top where you can draw triangle with labels and arrows</param>
-        /// <param name="bottomMargin">Miminum margin from bottom where you can draw triangle with labels and arrows<</param>
-        /// <param name="leftMargin">Miminum margin from left where you can draw triangle with labels and arrows<</param>
-        /// <param name="rightMargin">Miminum margin from right where you can draw triangle with labels and arrows<</param>
+        /// <param name="topMargin">Minimum margin from top where you can draw triangle with labels and arrows</param>
+        /// <param name="bottomMargin">Minimum margin from bottom where you can draw triangle with labels and arrows<</param>
+        /// <param name="leftMargin">Minimum margin from left where you can draw triangle with labels and arrows<</param>
+        /// <param name="rightMargin">Minimum margin from right where you can draw triangle with labels and arrows<</param>
         public void Calculate(Rectangle bounds, int topMargin, int bottomMargin, int leftMargin, int rightMargin)
         {
             float centerX = bounds.Left + bounds.Width / 2;

@@ -1,5 +1,1 @@
-﻿using (Matrix mat = g.Transform)
-{
-
-}
-
+﻿* Data binding
